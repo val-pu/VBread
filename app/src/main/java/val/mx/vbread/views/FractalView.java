@@ -124,17 +124,6 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView {
                 }
                 invalidate();
             }
-
-//
-//
-//            for (DrawInfo[] info : infos) {
-//                for (DrawInfo drawInfo : info) {
-//                    DrawInfo inf = fractalView.getAdapter().onDraw(drawInfo);
-//                    RectF rectF = new RectF(inf.getScreenX(), inf.getScreenY(), inf.getScreenX() + resolution, inf.getScreenY() + resolution);
-//                    p.setColor(inf.getColor());
-//                    canvas.drawRect(rectF, p);
-//                }
-//            }
             // TODO: 30.10.2020 ADD RESOLUTION EXTRA
 
             return null;
@@ -144,8 +133,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView {
         protected void onPostExecute(LinkedList<DrawInfo> infos) {
 
 
-            fractalView.invalidate();
-            Log.i("Zeichnen", "Zeichne view neu");
+            Log.i("Zeichnen", "Zeichnen ist fertig");
         }
     }
 
