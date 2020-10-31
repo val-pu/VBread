@@ -1,21 +1,17 @@
 package val.mx.vbread.containers;
 
-import android.graphics.Color;
-
 import androidx.annotation.ColorInt;
 
 import java.math.BigDecimal;
 
-import val.mx.vbread.views.FractalView;
-
 public class DrawInfo {
     private final BigDecimal x;
     private final BigDecimal y;
-    private final short screenX;
-    private final short screenY;
+    private final int screenX;
+    private final int screenY;
     private int color = 1;
 
-    public DrawInfo(BigDecimal x, BigDecimal y, short screenX, short screenY) {
+    public DrawInfo(BigDecimal x, BigDecimal y, int screenX, int screenY) {
         this.x = x;
         this.y = y;
         this.screenX = screenX;

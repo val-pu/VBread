@@ -41,14 +41,14 @@ public class MandelBrotAdapter extends FractalView.Adapter {
         for (int i = 0; i < maxItera; i++) {
             complex = complex.multiply(complex).add(start);
             if(complex.doubleValue() > 2) {
-                if(i!= 0) {
                     info.setColor(colors[i%colors.length]);
-                }
+
 
                 return info;
             }
 
         }
+        info.setColor(Color.WHITE);
 
         return info;
     }

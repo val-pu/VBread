@@ -46,6 +46,7 @@ class HomeFragment : Fragment(), SettingsSheet.Result {
         iteras: Int,
         resolution: Int
     ) {
+
         val adapter = MandelBrotAdapter()
         val d =Dimension(
             BigDecimal(xs!!),
