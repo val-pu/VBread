@@ -10,9 +10,11 @@ import val.mx.vbread.Complex;
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
 
-public class MandelBrotAdapter extends FractalView.Adapter {
+public class JuliaBrotAdapter extends FractalView.Adapter {
 
-    int[] colors = new int[] {
+    Complex c = new Complex(-0.7269, 0.1889);
+
+    int[] colors = new int[]{
             Color.rgb(9, 1, 47),
             Color.rgb(4, 4, 73),
             Color.rgb(0, 7, 100),
@@ -20,7 +22,7 @@ public class MandelBrotAdapter extends FractalView.Adapter {
             Color.rgb(24, 82, 177),
             Color.rgb(57, 125, 209),
             Color.rgb(134, 181, 229),
-            Color.rgb(211, 236, 248),
+//            Color.rgb(211, 236, 248),
             Color.rgb(241, 233, 191),
             Color.rgb(248, 201, 95),
             Color.rgb(255, 170, 0),
@@ -35,12 +37,12 @@ public class MandelBrotAdapter extends FractalView.Adapter {
     @Override
     public DrawInfo onDraw(DrawInfo info) {
 
-        Complex complex = new Complex(info.getX().doubleValue(),info.getY().doubleValue());
+        Complex complex = new Complex(info.getX().doubleValue(), info.getY().doubleValue());
         Complex start = complex;
         for (int i = 0; i < itera; i++) {
-            complex = complex.multiply(complex).add(start);
-            if(complex.doubleValue() > 2) {
-                info.setColor(colors[i%colors.length]);
+            complex = complex.multiply(complex).add(c);
+            if (complex.doubleValue() > 2) {
+                info.setColor(colors[i % colors.length]);
                 return info;
             }
 
@@ -50,11 +52,10 @@ public class MandelBrotAdapter extends FractalView.Adapter {
         return info;
     }
 
-
-
     @Override
     public Dimension getSize() {
         return dimension;
     }
+
 
 }

@@ -2,69 +2,132 @@ package `val`.mx.vbread.ui.home
 
 import `val`.mx.vbread.R
 import `val`.mx.vbread.containers.Dimension
-import `val`.mx.vbread.ui.popups.SettingsSheet
 import `val`.mx.vbread.views.FractalView
+import `val`.mx.vbread.views.JuliaBrotAdapter
 import `val`.mx.vbread.views.MandelBrotAdapter
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.*
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_home.*
 import java.math.BigDecimal
+import java.util.*
 
-class HomeFragment : Fragment(), SettingsSheet.Result {
+class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     private lateinit var homeViewModel: HomeViewModel
+    private lateinit var currentAdapter: FractalView.Adapter
+    var detailGrad: Int = 10
+
+    // TODO: 01.11.2020 FRAKTALAUSWAHL VERBESSERN
+    var fraktal: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        homeViewModel =
-//                ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
-//        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-//        })
-        return root
+        return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     lateinit var fractalView: FractalView
+    lateinit var xEditText: EditText
+    lateinit var yEditText: EditText
+    lateinit var iterEditText: EditText
+    lateinit var ausschnittEditText: EditText
+    lateinit var btn: Button
+    lateinit var btn_fraktal: Button
+    lateinit var btn_speichern: Button
+    lateinit var seekBar: SeekBar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fractalView = view.findViewById(R.id.fractalView)
+        btn_speichern = view.findViewById(R.id.button_speichern)
+        btn_fraktal = view.findViewById(R.id.button3)
+        btn = view.findViewById(R.id.button)
+        seekBar = view.findViewById(R.id.seekBar)
+        xEditText = view.findViewById(R.id.posXEditText)
+        yEditText = view.findViewById(R.id.posYEditText)
+        ausschnittEditText = view.findViewById(R.id.posAusschnittEditText)
 
-        SettingsSheet(this).show(childFragmentManager,"tag")
+        btn.setOnClickListener {
+            onResult(
+                BigDecimal(xEditText.text.toString()),
+                BigDecimal(yEditText.text.toString()),
+                BigDecimal(ausschnittEditText.text.toString()),
+                seekBar.progress*3
+            )
+        }
+
+        button_speichern.setOnClickListener {
+            if (fractalView.bitmap != null)
+                MediaStore.Images.Media.insertImage(
+                    view.context.contentResolver,
+                    fractalView.bitmap,
+                    UUID.randomUUID().toString(),
+                    ""
+                )
+        }
+
+        btn_fraktal.setOnClickListener {
+            Toast.makeText(view.context,"Fraktal geändert!",Toast.LENGTH_LONG).show()
+            fraktal = !fraktal
+        }
+
+        seekBar.setOnSeekBarChangeListener(this)
+
+
     }
 
-    override fun onResult(
-        xs: Double?,
-        ys: Double?,
-        ye: Double?,
+    public companion object fun onResult(
+        xs: BigDecimal,
+        ys: BigDecimal,
+        ye: BigDecimal,
         iteras: Int,
-        resolution: Int
     ) {
 
-        val adapter = MandelBrotAdapter()
-        val d =Dimension(
-            BigDecimal(xs!!),
-            BigDecimal(xs!! +ye!!),
-            BigDecimal(ys!!),
-            BigDecimal(ys + ye!!)
+        val adapter : FractalView.Adapter = if(fraktal) {
+            JuliaBrotAdapter()
+        } else {
+            MandelBrotAdapter()
+        }
+
+        val d = Dimension(
+            (xs),
+            (xs.subtract(ye)),
+            ys,
+            (ys.subtract(ye))
         )
-        fractalView.setResolution(resolution)
         adapter.run {
-            fractalView.setResolution(resolution)
-            setMaxItera(iteras)
+            setItera(iteras)
             setDimension(
                 d
             )
         }
-        Log.e("DIMENSION",d.toString())
+        Log.e("DIMENSION", d.toString())
+        currentAdapter = adapter
         fractalView.adapter = adapter
+    }
+
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+
+    }
+
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+    }
+
+    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+        currentAdapter.itera = seekBar!!.progress * 3
+        fractalView.adapter = currentAdapter
     }
 
 
 }
+
+
+
