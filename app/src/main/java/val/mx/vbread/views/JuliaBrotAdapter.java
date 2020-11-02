@@ -1,10 +1,6 @@
 package val.mx.vbread.views;
 
 import android.graphics.Color;
-import android.util.Log;
-
-import java.math.BigDecimal;
-import java.util.Random;
 
 import val.mx.vbread.Complex;
 import val.mx.vbread.containers.Dimension;
@@ -12,7 +8,7 @@ import val.mx.vbread.containers.DrawInfo;
 
 public class JuliaBrotAdapter extends FractalView.Adapter {
 
-    Complex c = new Complex(-0.7269, 0.1889);
+    Complex c = new Complex(-0.2, 0.9);
 
     int[] colors = new int[]{
             Color.rgb(9, 1, 47),

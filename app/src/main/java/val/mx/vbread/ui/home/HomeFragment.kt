@@ -13,15 +13,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_home.*
+import java.lang.Exception
 import java.math.BigDecimal
 import java.util.*
 
 class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
-    private lateinit var homeViewModel: HomeViewModel
     private lateinit var currentAdapter: FractalView.Adapter
-    var detailGrad: Int = 10
 
     // TODO: 01.11.2020 FRAKTALAUSWAHL VERBESSERN
     var fraktal: Boolean = false
@@ -84,49 +84,51 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     }
 
-    public companion object fun onResult(
+    companion object private fun onResult(
         xs: BigDecimal,
         ys: BigDecimal,
         ye: BigDecimal,
         iteras: Int,
     ) {
 
-        val adapter : FractalView.Adapter = if(fraktal) {
+        val adapter: FractalView.Adapter = if (fraktal) {
             JuliaBrotAdapter()
         } else {
             MandelBrotAdapter()
         }
 
-        val d = Dimension(
-            (xs),
-            (xs.subtract(ye)),
-            ys,
-            (ys.subtract(ye))
-        )
-        adapter.run {
-            setItera(iteras)
-            setDimension(
-                d
+        try {
+            val d = Dimension(
+                (xs),
+                (xs.subtract(ye)),
+                ys,
+                (ys.subtract(ye))
             )
+
+
+            adapter.run {
+                setItera(iteras)
+                setDimension(
+                    d
+                )
+            }
+            Log.e("DIMENSION", d.toString())
+            currentAdapter = adapter
+            fractalView.adapter = adapter
+        } catch(ex : Exception) {
+            Snackbar.make(requireView(),"Fehler bei Eingabe. Bitte wiederholen.",1)
+            ex.printStackTrace()
         }
-        Log.e("DIMENSION", d.toString())
-        currentAdapter = adapter
-        fractalView.adapter = adapter
     }
 
-    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) { }
 
-    }
-
-    override fun onStartTrackingTouch(seekBar: SeekBar?) {
-    }
+    override fun onStartTrackingTouch(seekBar: SeekBar?) { }
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
         currentAdapter.itera = seekBar!!.progress * 3
         fractalView.adapter = currentAdapter
     }
-
-
 }
 
 

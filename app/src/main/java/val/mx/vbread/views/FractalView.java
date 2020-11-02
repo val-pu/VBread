@@ -12,7 +12,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,7 +22,6 @@ import java.util.LinkedList;
 
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
-import val.mx.vbread.ui.home.HomeFragment;
 
 public class FractalView extends androidx.appcompat.widget.AppCompatImageView implements View.OnTouchListener {
     private int lastTask = 0;
@@ -64,6 +62,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
         setBackgroundDrawable(new BitmapDrawable(bitmap));
 
         dimension = adapter.getSize();
+        setOnTouchListener(this);
 
         verhaeltnis = new BigDecimal(getMeasuredWidth()).divide(new BigDecimal(getMeasuredWidth()), 3, RoundingMode.DOWN);
         Adapter.verhaeltnis = verhaeltnis;
@@ -103,34 +102,58 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
     public Canvas getCanvas() {
         return canvas;
     }
-
+    float x1 = 0, y1 = 0;
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        float x1 = 0, x2, y1 = 0, y2, dx, dy;
+        float x2, y2, dx, dy;
         String direction;
+        Log.i("Swipe direction",event.getAction() + "");
         switch (event.getAction()) {
             case (MotionEvent.ACTION_DOWN):
+                Log.i("Swipe direction","testDOWn");
                 x1 = event.getX();
                 y1 = event.getY();
-                break;
+                return true;
+
 
             case (MotionEvent.ACTION_UP): {
+                Log.i("Swipe direction","testUP");
                 x2 = event.getX();
                 y2 = event.getY();
                 dx = x2 - x1;
                 dy = y2 - y1;
+                Dimension dimension = adapter.dimension;
+
+                BigDecimal down = dimension.getDown();
+                BigDecimal top = dimension.getTop();
+                BigDecimal left = dimension.getLeft();
+                BigDecimal right = dimension.getRight();
 
                 if (Math.abs(dx) > Math.abs(dy)) {
-                    if (dx > 0)
-                        direction = "right";
-                    else
-                        direction = "left";
+                    if (dx > 0) {
+                        left = left.subtract(new BigDecimal("0.1"));
+                        right = right.subtract(new BigDecimal("0.1"));
+                    } else {
+                        left = left.add(new BigDecimal("0.1"));
+                        right = right.add(new BigDecimal("0.1"));
+                    }
+
                 } else {
-                    if (dy > 0)
-                        direction = "down";
-                    else
-                        direction = "up";
+                    if (dy > 0) {
+                        top = top.subtract(new BigDecimal("0.1"));
+                        down = down.subtract(new BigDecimal("0.1"));
+                    } else {
+                        top = top.add(new BigDecimal("0.1"));
+                        down = down.add(new BigDecimal("0.1"));
+                    }
+
                 }
+
+                dimension = new Dimension(left,right,top,down);
+                adapter.dimension = dimension;
+
+                setAdapter(adapter);
+
             }
         }
 
@@ -163,7 +186,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
             // Label um diese Schleife ggf. zu zerstören
             root:
-            for (int i = 7; 0 <= i; i--) {
+            for (int i = 5; 0 <= i; i--) {
 
 
                 int width = (int) Math.pow(2, i);

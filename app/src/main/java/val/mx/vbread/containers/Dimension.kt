@@ -3,13 +3,15 @@ package `val`.mx.vbread.containers
 import java.math.BigDecimal
 
 class Dimension(
-    val left: BigDecimal,
-    val right: BigDecimal,
-    val top: BigDecimal,
-    val down: BigDecimal
+    public val left: BigDecimal,
+    public val right: BigDecimal,
+    public val top: BigDecimal,
+    public val down: BigDecimal
 ) {
 
     override fun toString(): String {
         return "$left l $right r $top t $down d"
     }
+
+
 }

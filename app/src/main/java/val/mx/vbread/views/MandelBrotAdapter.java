@@ -1,10 +1,6 @@
 package val.mx.vbread.views;
 
 import android.graphics.Color;
-import android.util.Log;
-
-import java.math.BigDecimal;
-import java.util.Random;
 
 import val.mx.vbread.Complex;
 import val.mx.vbread.containers.Dimension;
@@ -43,7 +39,6 @@ public class MandelBrotAdapter extends FractalView.Adapter {
                 info.setColor(colors[i%colors.length]);
                 return info;
             }
-
         }
         info.setColor(Color.WHITE);
 
