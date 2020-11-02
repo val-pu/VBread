@@ -21,7 +21,7 @@ import java.util.*
 
 class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
-    private lateinit var currentAdapter: FractalView.Adapter
+    private var currentAdapter: FractalView.Adapter? = null
 
     // TODO: 01.11.2020 FRAKTALAUSWAHL VERBESSERN
     var fraktal: Boolean = false
@@ -56,12 +56,17 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         ausschnittEditText = view.findViewById(R.id.posAusschnittEditText)
 
         btn.setOnClickListener {
-            onResult(
-                BigDecimal(xEditText.text.toString()),
-                BigDecimal(yEditText.text.toString()),
-                BigDecimal(ausschnittEditText.text.toString()),
-                seekBar.progress*3
-            )
+            try {
+                onResult(
+                    BigDecimal(xEditText.text.toString()),
+                    BigDecimal(yEditText.text.toString()),
+                    BigDecimal(ausschnittEditText.text.toString()),
+                    seekBar.progress * 3
+                )
+            } catch (ex: Exception) {
+                Snackbar.make(requireView(), "Fehler bei Eingabe. Bitte wiederholen.", 1)
+                ex.printStackTrace()
+            }
         }
 
         button_speichern.setOnClickListener {
@@ -75,16 +80,19 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         btn_fraktal.setOnClickListener {
-            Toast.makeText(view.context,"Fraktal geändert!",Toast.LENGTH_LONG).show()
+            Toast.makeText(view.context, "Fraktal geändert!", Toast.LENGTH_LONG).show()
             fraktal = !fraktal
         }
 
         seekBar.setOnSeekBarChangeListener(this)
 
+        fractalView.homeFragment = this
 
     }
 
-    companion object private fun onResult(
+    companion object private
+
+    fun onResult(
         xs: BigDecimal,
         ys: BigDecimal,
         ye: BigDecimal,
@@ -97,37 +105,41 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             MandelBrotAdapter()
         }
 
-        try {
-            val d = Dimension(
-                (xs),
-                (xs.subtract(ye)),
-                ys,
-                (ys.subtract(ye))
+
+        val d = Dimension(
+            (xs),
+            (xs.subtract(ye)),
+            ys,
+            (ys.subtract(ye))
+        )
+
+
+        adapter.run {
+            setItera(iteras)
+            setDimension(
+                d
             )
-
-
-            adapter.run {
-                setItera(iteras)
-                setDimension(
-                    d
-                )
-            }
-            Log.e("DIMENSION", d.toString())
-            currentAdapter = adapter
-            fractalView.adapter = adapter
-        } catch(ex : Exception) {
-            Snackbar.make(requireView(),"Fehler bei Eingabe. Bitte wiederholen.",1)
-            ex.printStackTrace()
         }
+        Log.e("DIMENSION", d.toString())
+        currentAdapter = adapter
+        fractalView.adapter = adapter
+
     }
 
-    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) { }
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {}
 
-    override fun onStartTrackingTouch(seekBar: SeekBar?) { }
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
-        currentAdapter.itera = seekBar!!.progress * 3
-        fractalView.adapter = currentAdapter
+
+        if (currentAdapter == null) return
+        currentAdapter!!.itera = seekBar!!.progress * 3
+        fractalView.adapter = currentAdapter!!
+    }
+
+    fun updateUI() {
+        yEditText.setText(currentAdapter!!.size.down.toDouble().toString())
+        xEditText.setText(currentAdapter!!.size.left.toDouble().toString())
     }
 }
 

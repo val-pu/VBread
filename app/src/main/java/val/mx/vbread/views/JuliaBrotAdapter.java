@@ -3,12 +3,17 @@ package val.mx.vbread.views;
 import android.graphics.Color;
 
 import val.mx.vbread.Complex;
+import val.mx.vbread.VComplex;
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
 
 public class JuliaBrotAdapter extends FractalView.Adapter {
 
-    Complex c = new Complex(-0.2, 0.9);
+    VComplex param = new VComplex(0.1, -0.1D);
+
+    public void setParam(VComplex param) {
+        this.param = param;
+    }
 
     int[] colors = new int[]{
             Color.rgb(9, 1, 47),
@@ -33,11 +38,11 @@ public class JuliaBrotAdapter extends FractalView.Adapter {
     @Override
     public DrawInfo onDraw(DrawInfo info) {
 
-        Complex complex = new Complex(info.getX().doubleValue(), info.getY().doubleValue());
-        Complex start = complex;
-        for (int i = 0; i < itera; i++) {
-            complex = complex.multiply(complex).add(c);
-            if (complex.doubleValue() > 2) {
+
+        VComplex complex = new VComplex(info.getX().doubleValue(), info.getY().doubleValue());
+        for (int i = 0; i < 1000; i++) {
+            complex = complex.multiply(complex).add(param);
+            if (complex.abs() > 2) {
                 info.setColor(colors[i % colors.length]);
                 return info;
             }

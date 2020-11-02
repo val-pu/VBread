@@ -153,5 +153,26 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button_speichern" />
 
+        <TextView
+            style="@style/TextView"
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/posAusschnittEditText" />
+
+        <EditText
+            style="@style/editText"
+            android:text="30"
+            android:padding="2dp"
+            android:id="@+id/editTextNumberSigned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="numberSigned"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

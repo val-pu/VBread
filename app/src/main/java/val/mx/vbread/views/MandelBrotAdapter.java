@@ -1,14 +1,17 @@
 package val.mx.vbread.views;
 
 import android.graphics.Color;
+import android.util.Log;
 
-import val.mx.vbread.Complex;
+import java.math.BigDecimal;
+
+import val.mx.vbread.VComplex;
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
 
 public class MandelBrotAdapter extends FractalView.Adapter {
 
-    int[] colors = new int[] {
+    int[] colors = new int[]{
             Color.rgb(9, 1, 47),
             Color.rgb(4, 4, 73),
             Color.rgb(0, 7, 100),
@@ -27,24 +30,37 @@ public class MandelBrotAdapter extends FractalView.Adapter {
     };
 
 
+    private VComplex old = new VComplex(20D, 20D);
+    private DrawInfo oldInfo = new DrawInfo(new BigDecimal(0), new BigDecimal(0), 1, 1);
+    private Double akzeptanz = 0.000003D;
 
     @Override
     public DrawInfo onDraw(DrawInfo info) {
 
-        Complex complex = new Complex(info.getX().doubleValue(),info.getY().doubleValue());
-        Complex start = complex;
+
+        VComplex comp = new VComplex(info.getX().doubleValue(), info.getY().doubleValue());
+        VComplex tempC = comp;
+        VComplex start = comp;
+
+
         for (int i = 0; i < itera; i++) {
-            complex = complex.multiply(complex).add(start);
-            if(complex.doubleValue() > 2) {
-                info.setColor(colors[i%colors.length]);
+
+
+            comp = comp.multiply(comp).add(start);
+            if (comp.abs() > 2) {
+                info.setColor(colors[i % colors.length]);
+                return info;
+            }
+
+            if (Math.abs(Math.abs(old.abs() - comp.abs())) < akzeptanz) {
+                info.setColor(Color.WHITE);
                 return info;
             }
         }
+        old = tempC;
         info.setColor(Color.WHITE);
-
         return info;
     }
-
 
 
     @Override
