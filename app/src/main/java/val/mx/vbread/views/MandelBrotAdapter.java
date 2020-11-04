@@ -1,7 +1,7 @@
 package val.mx.vbread.views;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.util.Log;
 
 import java.math.BigDecimal;
 
@@ -32,40 +32,83 @@ public class MandelBrotAdapter extends FractalView.Adapter {
 
     private VComplex old = new VComplex(20D, 20D);
     private DrawInfo oldInfo = new DrawInfo(new BigDecimal(0), new BigDecimal(0), 1, 1);
-    private Double akzeptanz = 0.000003D;
+    private Double akzeptanz = 0.2D;
+    private int lastColor = 0;
+
 
     @Override
     public DrawInfo onDraw(DrawInfo info) {
 
-
+        int check = 3, checkCounter = 0;
+        int update = 10, updateCounter = 0;
         VComplex comp = new VComplex(info.getX().doubleValue(), info.getY().doubleValue());
-        VComplex tempC = comp;
         VComplex start = comp;
-
 
         for (int i = 0; i < itera; i++) {
 
 
             comp = comp.multiply(comp).add(start);
             if (comp.abs() > 2) {
-                info.setColor(colors[i % colors.length]);
+                int color = 0;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    color = colors[i % colors.length];
+
+                        if(i!= 0)
+                        color = color +  colors[(i+1)%colors.length]/ i%itera;
+
+                    info.setColor(color);
+                }
                 return info;
             }
 
-            if (Math.abs(Math.abs(old.abs() - comp.abs())) < akzeptanz) {
-                info.setColor(Color.WHITE);
-                return info;
+            // PERIODICITY CHECKING
+            // https://en.wikipedia.org/wiki/User:Simpsons_contributor/periodicity_checking
+            if (Math.abs(old.getImag() - comp.getImag()) < ZERO)
+                if (Math.abs(old.getReal() - comp.getReal()) < ZERO) {
+//            if (Math.abs(Math.abs(old.abs() - comp.abs())) < 0) {
+
+                    info.setColor(Color.RED);
+                    
+                    return info;
+                }
+
+            if (check == checkCounter) {
+                checkCounter = 0;
+                old = comp;
+
+                if (update == updateCounter) {
+                    check *= 2;
+                    updateCounter = 0;
+                }
+
+                updateCounter++;
             }
+
+            checkCounter++;
         }
-        old = tempC;
         info.setColor(Color.WHITE);
         return info;
     }
 
+    @SuppressLint("NewApi")
+    public int bildeMitteFrabe(int c1, int c2) {
+
+        if(c1 == c2) return c1;
+
+        return ((int)(Math.abs(c1 - c2 )/1.1D)) + c2;
+    }
+
+
+    @Override
+    public void onNewLine() {
+        old = new VComplex(9D, 9D);
+    }
 
     @Override
     public Dimension getSize() {
         return dimension;
     }
+
+    private Double ZERO = 1e-30;
 
 }

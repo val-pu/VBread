@@ -1,6 +1,7 @@
 package val.mx.vbread.views;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -56,6 +57,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                         Bitmap.Config.ARGB_8888);
 
                 canvas = new Canvas(bitmap);
+                setBackgroundDrawable(new BitmapDrawable(bitmap));
             }
         });
     }
@@ -64,12 +66,12 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
     public void init() {
 
-        setBackgroundDrawable(new BitmapDrawable(bitmap));
+
 
         dimension = adapter.getSize();
         setOnTouchListener(this);
 
-        verhaeltnis = new BigDecimal(getMeasuredWidth()).divide(new BigDecimal(getMeasuredWidth()), 3, RoundingMode.DOWN);
+        verhaeltnis = new BigDecimal(getMeasuredWidth()).divide(new BigDecimal(getMeasuredHeight()), 3, RoundingMode.DOWN);
         Adapter.verhaeltnis = verhaeltnis;
 
         Log.i("Unnoetiges Verhältnis", "Nutze das Verhältnis 1 : " + verhaeltnis);
@@ -118,8 +120,13 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
         float x2, y2, dx, dy;
         String direction;
-        Log.i("Swipe direction",event.getAction() + "");
+
         switch (event.getAction()) {
+
+            case 261:
+                Log.i("ZOOMER","ZOOMING");
+                return true;
+
             case (MotionEvent.ACTION_DOWN):
                 Log.i("Swipe direction","testDOWn");
                 x1 = event.getX();
@@ -128,7 +135,6 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
 
             case (MotionEvent.ACTION_MOVE): {
-                touchCount++;
 
                 Log.i("Swipe direction","testUP");
                 x2 = event.getX();
@@ -144,7 +150,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                 BigDecimal diameter = left.subtract(right).abs();
                 BigDecimal step = left.subtract(right).divide(new BigDecimal(100),2000,RoundingMode.DOWN);
 
-
+                touchCount++;
                 if (Math.abs(dx) > Math.abs(dy)) {
                     if (dx > 0) {
                         left = left.subtract(step);
@@ -167,17 +173,20 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
                 dimension = new Dimension(left,right,top,down);
                 adapter.dimension = dimension;
-
+                HomeFragment.Companion.onResult(dimension.getLeft(), dimension.getTop(),diameter, adapter.itera);
                 if(touchCount%4 == 0) {
                     touchCount = 0;
-                    setAdapter(adapter);
+
                 }
 
             }
-            homeFragment.updateUI();
-            x1 = event.getX();
-            y1 = event.getY();
+
+
+
         }
+        y1 = event.getY();
+        x1 = event.getX();
+        homeFragment.updateUI();
 
         return false;
     }
@@ -197,15 +206,20 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
         @Override
         protected void onPreExecute() {
             // Zuweisung einer einzigartigen ID
-            taskId = ++lastTask;
+            taskId = lastTask +2;
+            lastTask = taskId;
+
+            Log.i("TASK","TASK ID " + taskId + " started!");
         }
 
-        private Float dicke = 0.3f;
+        private Float dicke = 0.8f;
 
         @Override
         protected Void doInBackground(Void... size) {
 //            Log.i("Zeichnen", "Frage Farben ab und setze Pixel");
 
+
+            Dimension tempDimension = dimension;
 
             Canvas canvas = fractalView.getCanvas();
 
@@ -226,22 +240,24 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
                 for (int j = 0; true; j++) {
 
+                    adapter.onNewLine();
+
                     // Falls ein neuer Zeichenprozess erstellt wird wird dieser Unterbrochen
-                    if (taskId != lastTask) break root;
 
                     screenY = j * width;
 
                     if (screenY > getWidth()) break;
 
-                    BigDecimal y = getPoint(dimension.getDown(), dimension.getTop(), count, j);
+                    BigDecimal y = getPoint(tempDimension.getDown(), tempDimension.getTop(), count, j);
 
                     for (int k = 0; true; k++) {
+
                         screenX = k * width;
 
                         if (screenX > getWidth()) break;
 
                         // Initialisiere Berechnungsgrundlage
-                        DrawInfo inf = new DrawInfo(getPoint(dimension.getLeft(), dimension.getRight(), count, k), y, k * (int) width, j * (int) width);
+                        DrawInfo inf = new DrawInfo(getPoint(tempDimension.getLeft(), tempDimension.getRight(), count, k), y, k * (int) width, j * (int) width);
 
 
                         // Frage Farben ab { @see FractalView.Adapter#onDraw(info : DrawInfo) }
@@ -254,15 +270,12 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                         canvas.drawRect(rectF, p);
 
                     }
+                    if (taskId != lastTask) return null;
+                    invalidate();
+
 
                     // Zeichnet den Bildschirm neu
                 }
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        invalidate();
-                    }
-                }).start();
             }
 
 
@@ -279,11 +292,13 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
         @Override
         protected void onPostExecute(Void infos) {
-//            Log.i("Zeichnen", "Zeichnen ist fertig");
+            Log.i("Zeichnen", "Task ID " + taskId + " is done");
         }
     }
 
     public abstract static class Adapter {
+
+        public void onNewLine() {}
 
         protected static BigDecimal verhaeltnis;
         Dimension dimension;

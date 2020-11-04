@@ -16,6 +16,15 @@ public class VComplex {
 //        this.imag = new Double(imag);
 //    }
 
+
+    public Double getImag() {
+        return imag;
+    }
+
+    public Double getReal() {
+        return real;
+    }
+
     public Double abs() {
 
         // WURZELBERECHNUNG https://de.wikipedia.org/wiki/Newtonverfahren
