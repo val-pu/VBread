@@ -43,23 +43,35 @@ public class MandelBrotAdapter extends FractalView.Adapter {
         int update = 10, updateCounter = 0;
         VComplex comp = new VComplex(info.getX().doubleValue(), info.getY().doubleValue());
         VComplex start = comp;
-
+        int pow = 1;
         for (int i = 0; i < itera; i++) {
 
 
             comp = comp.multiply(comp).add(start);
-            if (comp.abs() > 2) {
+
+            // Farben https://www.math.univ-toulouse.fr/~cheritat/wiki-draw/index.php/Mandelbrot_set
+            // Farben https://www.codingame.com/playgrounds/2358/how-to-plot-the-mandelbrot-set/adding-some-colors
+
+            if (comp.abs() > 1000000) {
+
+                float f = (float) (i + 1 - Math.log(Math.log1p(comp.abs()))) * 255F/itera;
+
+
                 int color = 0;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    color = colors[i % colors.length];
-
-                        if(i!= 0)
-                        color = color +  colors[(i+1)%colors.length]/ i%itera;
-
-                    info.setColor(color);
+                    info.setColor(Color.valueOf(f,f,f).toArgb());
+//
+//                    color = colors[i % colors.length];
+//
+//                        if(i!= 0)
+//                        color = color +  colors[(i+1)%colors.length]/ i%itera;
+//
+//                    info.setColor(color);
                 }
                 return info;
             }
+
+            pow *=2;
 
             // PERIODICITY CHECKING
             // https://en.wikipedia.org/wiki/User:Simpsons_contributor/periodicity_checking
@@ -67,7 +79,7 @@ public class MandelBrotAdapter extends FractalView.Adapter {
                 if (Math.abs(old.getReal() - comp.getReal()) < ZERO) {
 //            if (Math.abs(Math.abs(old.abs() - comp.abs())) < 0) {
 
-                    info.setColor(Color.RED);
+                    info.setColor(Color.WHITE);
                     
                     return info;
                 }

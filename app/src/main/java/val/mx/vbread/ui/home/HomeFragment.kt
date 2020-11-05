@@ -123,7 +123,6 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             ye: BigDecimal,
             iteras: Int,
         ) {
-
             val adapter: FractalView.Adapter = if (fraktal) {
                 JuliaBrotAdapter()
             } else {
