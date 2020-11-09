@@ -2,6 +2,7 @@ package val.mx.vbread.views;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.graphics.ColorSpace;
 
 import java.math.BigDecimal;
 
@@ -52,14 +53,15 @@ public class MandelBrotAdapter extends FractalView.Adapter {
             // Farben https://www.math.univ-toulouse.fr/~cheritat/wiki-draw/index.php/Mandelbrot_set
             // Farben https://www.codingame.com/playgrounds/2358/how-to-plot-the-mandelbrot-set/adding-some-colors
 
-            if (comp.abs() > 1000000) {
+            if (comp.abs() > 2) {
 
-                float f = (float) (i + 1 - Math.log(Math.log1p(comp.abs()))) * 255F/itera;
+//                int f = (int) ((i + 1 - Math.log( (int) Math.log(comp.abs()) /*/ Math.log(2)*/)) * 255F/itera);
+                float f = (float) (i + 1 - Math.log(log2(comp.abs()))) * (255F / itera);
 
 
                 int color = 0;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    info.setColor(Color.valueOf(f,f,f).toArgb());
+                    info.setColor(Color.valueOf(f, f, f).toArgb());
 //
 //                    color = colors[i % colors.length];
 //
@@ -71,7 +73,7 @@ public class MandelBrotAdapter extends FractalView.Adapter {
                 return info;
             }
 
-            pow *=2;
+            pow *= 2;
 
             // PERIODICITY CHECKING
             // https://en.wikipedia.org/wiki/User:Simpsons_contributor/periodicity_checking
@@ -80,7 +82,7 @@ public class MandelBrotAdapter extends FractalView.Adapter {
 //            if (Math.abs(Math.abs(old.abs() - comp.abs())) < 0) {
 
                     info.setColor(Color.WHITE);
-                    
+
                     return info;
                 }
 
@@ -105,11 +107,14 @@ public class MandelBrotAdapter extends FractalView.Adapter {
     @SuppressLint("NewApi")
     public int bildeMitteFrabe(int c1, int c2) {
 
-        if(c1 == c2) return c1;
+        if (c1 == c2) return c1;
 
-        return ((int)(Math.abs(c1 - c2 )/1.1D)) + c2;
+        return ((int) (Math.abs(c1 - c2) / 1.1D)) + c2;
     }
 
+    private int log2(Double val) {
+        return (int) (Math.log(val) / Math.log(2));
+    }
 
     @Override
     public void onNewLine() {

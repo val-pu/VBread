@@ -212,7 +212,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
             Log.i("TASK","TASK ID " + taskId + " started!");
         }
 
-        private Float dicke = 0.8f;
+        private Float dicke = 1.8f;
 
         @Override
         protected Void doInBackground(Void... size) {
@@ -222,6 +222,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
             Dimension tempDimension = dimension;
 
             Canvas canvas = fractalView.getCanvas();
+
 
             // Label um diese Schleife ggf. zu zerstören
             root:
@@ -248,11 +249,17 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
                     if (screenY > getWidth()) break;
 
+                        if( (screenY)%(width*2) == 0) continue;
+
                     BigDecimal y = getPoint(tempDimension.getDown(), tempDimension.getTop(), count, j);
 
                     for (int k = 0; true; k++) {
 
                         screenX = k * width;
+
+                        if( (screenX)%(width*2) == 0) {
+                            continue;
+                        }
 
                         if (screenX > getWidth()) break;
 
@@ -265,17 +272,25 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                         inf = fractalView.getAdapter().onDraw(inf);
 
                         // Setze Pixel
-                        RectF rectF = new RectF(inf.getScreenX() + dicke/2, inf.getScreenY() +dicke/2, inf.getScreenX() + width + dicke/2, inf.getScreenY() + width + dicke/2);
+                        RectF rectF = new RectF(inf.getScreenX() + dicke/2, inf.getScreenY() +dicke/2, inf.getScreenX() + width + dicke/2 + 1, inf.getScreenY() + width + dicke/2 + 1);
                         p.setColor(inf.getColor());
                         canvas.drawRect(rectF, p);
 
                     }
                     if (taskId != lastTask) return null;
-                    invalidate();
+
 
 
                     // Zeichnet den Bildschirm neu
                 }
+                new Thread(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                invalidate();
+                            }
+                        }
+                );
             }
 
 
