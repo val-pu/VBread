@@ -65,7 +65,7 @@
         app:layout_constraintTop_toBottomOf="@+id/genauigkeit" />
 
     <EditText
-        android:id="@+id/iterationen"
+        android:id="@+id/iterationenText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -92,5 +92,5 @@
         android:ems="10"
         android:inputType="numberDecimal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iterationen" />
+        app:layout_constraintTop_toBottomOf="@+id/iterationenText" />
 </androidx.constraintlayout.widget.ConstraintLayout>

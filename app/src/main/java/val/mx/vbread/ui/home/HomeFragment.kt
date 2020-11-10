@@ -81,7 +81,7 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                     BigDecimal(xEditText.text.toString()),
                     BigDecimal(yEditText.text.toString()),
                     BigDecimal(ausschnittEditText.text.toString()),
-                    seekBar.progress * 3
+                    Integer.parseInt(iterationen.text.toString())
                 )
             } catch (ex: Exception) {
                 Snackbar.make(requireView(), "Fehler bei Eingabe. Bitte wiederholen.", 1)

@@ -37,7 +37,7 @@ public class SettingsSheet extends DialogFragment {
         ys = view.findViewById(R.id.ys);
         auGroesse = view.findViewById(R.id.auGroesse);
         resolution = view.findViewById(R.id.genauigkeit);
-        iterationen = view.findViewById(R.id.iterationen);
+        iterationen = view.findViewById(R.id.iterationenText);
 
         view.findViewById(R.id.done).setOnClickListener(v -> {
 

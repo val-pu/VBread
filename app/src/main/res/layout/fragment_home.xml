@@ -166,16 +166,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/button_speichern" />
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/iterationenText"
                 style="@style/TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
+                android:text="Iterationen"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/posAusschnittEditText" />
 
             <EditText
-                android:id="@+id/editTextNumberSigned"
+                android:id="@+id/iterationen"
                 style="@style/editText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -184,7 +184,7 @@
                 android:padding="2dp"
                 android:text="30"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView10" />
+                app:layout_constraintTop_toBottomOf="@+id/iterationenText" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

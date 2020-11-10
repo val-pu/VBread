@@ -3,6 +3,9 @@ package val.mx.vbread.views;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.ColorSpace;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import val.mx.vbread.VComplex;
 import val.mx.vbread.containers.Dimension;
@@ -31,14 +34,17 @@ public class MandelBrotAdapter extends FractalView.Adapter {
 
     private VComplex old = new VComplex(20D, 20D);
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public DrawInfo onDraw(DrawInfo info) {
+
+        int threshold = (int) (itera/20D);
 
         int check = 3, checkCounter = 0;
         int update = 10, updateCounter = 0;
         VComplex comp = new VComplex(info.getX().doubleValue(), info.getY().doubleValue());
         VComplex start = comp;
-        int pow = 1;
+
         for (int i = 0; i < itera; i++) {
 
 
@@ -49,13 +55,19 @@ public class MandelBrotAdapter extends FractalView.Adapter {
 
             if (comp.abs() > 2) {
 
+                if(i < threshold) {
+                    info.setColor(colors[threshold%colors.length]);
+                    return info;
+                }
+
 //                int f = (int) ((i + 1 - Math.log( (int) Math.log(comp.abs()) /*/ Math.log(2)*/)) * 255F/itera);
-                float f = (float) (i + 1 - Math.log(log2(comp.abs()))) * (255F / itera);
+//                float f = (float) (i + 1 - Math.log(log2(comp.abs()))) * (255F / itera);
 
 
                 int color = 0;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    info.setColor(Color.valueOf(f, f, f).toArgb());
+//                    info.setColor(Color.valueOf(200-f, 200-f, 200-f).toArgb());
+                    info.setColor(colors[i%colors.length]);
 //
 //                    color = colors[i % colors.length];
 //
@@ -67,14 +79,12 @@ public class MandelBrotAdapter extends FractalView.Adapter {
                 return info;
             }
 
-            pow *= 2;
-
             // PERIODICITY CHECKING
             // https://en.wikipedia.org/wiki/User:Simpsons_contributor/periodicity_checking
             if (Math.abs(old.getImag() - comp.getImag()) < ZERO)
                 if (Math.abs(old.getReal() - comp.getReal()) < ZERO) {
 
-                    info.setColor(Color.WHITE);
+                    info.setColor(Color.BLACK);
 
                     return info;
                 }
@@ -93,16 +103,8 @@ public class MandelBrotAdapter extends FractalView.Adapter {
 
             checkCounter++;
         }
-        info.setColor(Color.WHITE);
+        info.setColor(Color.BLACK);
         return info;
-    }
-
-    @SuppressLint("NewApi")
-    public int bildeMitteFrabe(int c1, int c2) {
-
-        if (c1 == c2) return c1;
-
-        return ((int) (Math.abs(c1 - c2) / 1.1D)) + c2;
     }
 
     private int log2(Double val) {
