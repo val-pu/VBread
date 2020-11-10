@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.ColorSpace;
 
-import java.math.BigDecimal;
-
 import val.mx.vbread.VComplex;
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
@@ -32,10 +30,6 @@ public class MandelBrotAdapter extends FractalView.Adapter {
 
 
     private VComplex old = new VComplex(20D, 20D);
-    private DrawInfo oldInfo = new DrawInfo(new BigDecimal(0), new BigDecimal(0), 1, 1);
-    private Double akzeptanz = 0.2D;
-    private int lastColor = 0;
-
 
     @Override
     public DrawInfo onDraw(DrawInfo info) {
@@ -79,7 +73,6 @@ public class MandelBrotAdapter extends FractalView.Adapter {
             // https://en.wikipedia.org/wiki/User:Simpsons_contributor/periodicity_checking
             if (Math.abs(old.getImag() - comp.getImag()) < ZERO)
                 if (Math.abs(old.getReal() - comp.getReal()) < ZERO) {
-//            if (Math.abs(Math.abs(old.abs() - comp.abs())) < 0) {
 
                     info.setColor(Color.WHITE);
 

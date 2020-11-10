@@ -1,7 +1,5 @@
 package val.mx.vbread;
 
-import val.mx.vbread.containers.DrawInfo;
-
 public class VComplex {
     private final Double real;
     private final Double imag;
@@ -10,12 +8,6 @@ public class VComplex {
         this.real = real;
         this.imag = imag;
     }
-
-//    public VComplex(Double real, Double imag) {
-//        this.real = new Double(real);
-//        this.imag = new Double(imag);
-//    }
-
 
     public Double getImag() {
         return imag;

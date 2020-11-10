@@ -1,7 +1,5 @@
 package val.mx.vbread.views;
-
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -19,21 +17,26 @@ import androidx.annotation.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.LinkedList;
 
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
 import val.mx.vbread.ui.home.HomeFragment;
 
+/**
+ * @author Lukas Hensel
+ * @since 10 Nov. 15: 08 Geschichte PKT
+ */
+
 public class FractalView extends androidx.appcompat.widget.AppCompatImageView implements View.OnTouchListener {
+    // Wunderschoene Variablen
+
     private int lastTask = 0;
     private Adapter adapter = null;
     private Bitmap bitmap;
-    private int resolution = 2, resolutionExtra;
     private Canvas canvas;
     private Dimension dimension;
     public HomeFragment homeFragment;
-    private BigDecimal verhaeltnis;
+    private BigDecimal ratio;
 
     public FractalView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -48,17 +51,14 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
         super.onLayout(changed, left, top, right, bottom);
 
-        getRootView().post(new Runnable() {
-            @Override
-            public void run() {
-                bitmap = Bitmap.createBitmap(
-                        getMeasuredWidth(),
-                        getMeasuredHeight(),
-                        Bitmap.Config.ARGB_8888);
+        getRootView().post(() -> {
+            bitmap = Bitmap.createBitmap(
+                    getMeasuredWidth(),
+                    getMeasuredHeight(),
+                    Bitmap.Config.ARGB_8888);
 
-                canvas = new Canvas(bitmap);
-                setBackgroundDrawable(new BitmapDrawable(bitmap));
-            }
+            canvas = new Canvas(bitmap);
+            setBackgroundDrawable(new BitmapDrawable(bitmap));
         });
     }
 
@@ -71,10 +71,10 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
         dimension = adapter.getSize();
         setOnTouchListener(this);
 
-        verhaeltnis = new BigDecimal(getMeasuredWidth()).divide(new BigDecimal(getMeasuredHeight()), 3, RoundingMode.DOWN);
-        Adapter.verhaeltnis = verhaeltnis;
+        ratio = new BigDecimal(getMeasuredWidth()).divide(new BigDecimal(getMeasuredHeight()), 3, RoundingMode.DOWN);
+        Adapter.verhaeltnis = ratio;
 
-        Log.i("Unnoetiges Verhältnis", "Nutze das Verhältnis 1 : " + verhaeltnis);
+        Log.i("Unnoetiges Verhältnis", "Nutze das Verhältnis 1 : " + ratio);
 
         Log.i("Zeichnen", "Zeichenprozess hat begonnen");
 
@@ -98,10 +98,6 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
         return adapter;
     }
 
-    public void setResolution(int resolution) {
-        this.resolution = resolution;
-    }
-
     public Bitmap getBitmap() {
         return bitmap;
     }
@@ -115,6 +111,8 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+
+        // Bewgen der
 
         if(adapter == null) return false;
 
@@ -239,17 +237,22 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
                 int screenX, screenY;
 
+
                 for (int j = 0; true; j++) {
 
+                    // Frage die Userdefinierten Aktionen bei einer neuen Linie ab
                     adapter.onNewLine();
 
                     // Falls ein neuer Zeichenprozess erstellt wird wird dieser Unterbrochen
 
+
                     screenY = j * width;
 
+                    // Falls die maximale anzahl horizontaler Pixel ueberschritten wird, so
                     if (screenY > getWidth()) break;
 
-                        if( (screenY)%(width*2) == 0) continue;
+                    // Versuch der optimisation TODO erklaeren
+                    if( (screenY)%(width*2) == 0) continue;
 
                     BigDecimal y = getPoint(tempDimension.getDown(), tempDimension.getTop(), count, j);
 
@@ -266,23 +269,27 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                         // Initialisiere Berechnungsgrundlage
                         DrawInfo inf = new DrawInfo(getPoint(tempDimension.getLeft(), tempDimension.getRight(), count, k), y, k * (int) width, j * (int) width);
 
-
                         // Frage Farben ab { @see FractalView.Adapter#onDraw(info : DrawInfo) }
-
                         inf = fractalView.getAdapter().onDraw(inf);
 
+                        if(inf.getColor() == -1)
+                            try {
+                                throw new Exception("Fehler: Farbe wurde NICHT definiert !");
+                            } catch (Exception e) {
+                                inf.setColor(1);
+                            }
+
+
                         // Setze Pixel
-                        RectF rectF = new RectF(inf.getScreenX() + dicke/2, inf.getScreenY() +dicke/2, inf.getScreenX() + width + dicke/2 + 1, inf.getScreenY() + width + dicke/2 + 1);
+                        RectF rectF = new RectF(inf.getScreenX(), inf.getScreenY(), inf.getScreenX() + width, inf.getScreenY() + width);
                         p.setColor(inf.getColor());
                         canvas.drawRect(rectF, p);
 
                     }
+                    // Falls ein neuer Task gestartet wurde, so wird dieser abgebrochen
                     if (taskId != lastTask) return null;
-
-
-
-                    // Zeichnet den Bildschirm neu
                 }
+                // Zeichnet den Bildschirm neu
                 new Thread(
                         new Runnable() {
                             @Override
@@ -292,17 +299,8 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                         }
                 );
             }
-
-
             // TODO: 30.10.2020 ADD RESOLUTION EXTRA
-
-
             return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
         }
 
         @Override
@@ -311,6 +309,8 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
         }
     }
 
+
+    // Klasse, um seine eigenen Fraktale einzubinden
     public abstract static class Adapter {
 
         public void onNewLine() {}

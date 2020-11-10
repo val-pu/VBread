@@ -2,7 +2,6 @@ package val.mx.vbread.views;
 
 import android.graphics.Color;
 
-import val.mx.vbread.Complex;
 import val.mx.vbread.VComplex;
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;

@@ -73,7 +73,7 @@ class Imagable(context: Context, attrs: AttributeSet) :
                 }
                 res = Complex(0.0, 0.0)
 
-                var itera: Int = 0;
+                var itera: Int = 0
                 for (k in 0..16) {
 
 
