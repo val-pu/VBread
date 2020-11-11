@@ -1,4 +1,5 @@
 package val.mx.vbread.views;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,7 +18,9 @@ import androidx.annotation.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.TimerTask;
 
+import val.mx.vbread.R;
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
 import val.mx.vbread.ui.home.HomeFragment;
@@ -30,7 +33,10 @@ import val.mx.vbread.ui.home.HomeFragment;
 public class FractalView extends androidx.appcompat.widget.AppCompatImageView implements View.OnTouchListener {
     // Wunderschoene Variablen
 
+    private double zoomFactor = 1.2d;
+
     private int lastTask = 0;
+    private int lastZoomDistance = 0;
     private Adapter adapter = null;
     private Bitmap bitmap;
     private Canvas canvas;
@@ -42,7 +48,6 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
         super(context, attrs);
         setOnTouchListener(this);
     }
-
 
 
     @SuppressLint("DrawAllocation")
@@ -63,9 +68,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
     }
 
 
-
     public void init() {
-
 
 
         dimension = adapter.getSize();
@@ -105,28 +108,82 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
     public Canvas getCanvas() {
         return canvas;
     }
+
     float x1 = 0, y1 = 0;
 
     private int touchCount = 0;
 
+    private int getDifference(MotionEvent e) {
+
+        int dx = (int) (e.getX(0) - e.getX(1));
+        int dy = (int) (e.getY(0) - e.getY(1));
+
+        return (int) Math.sqrt(Math.pow(dy, 2) * Math.pow(dx, 2));
+    }
+
+    private BigDecimal getMiddle(BigDecimal b1, BigDecimal b2) {
+        return b2.subtract(b1).divide(new BigDecimal(2),20,RoundingMode.DOWN).add(b1);
+    }
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
-        // Bewgen der
-
-        if(adapter == null) return false;
+        if (adapter == null) return false;
 
         float x2, y2, dx, dy;
-        String direction;
 
-        switch (event.getAction()) {
 
-            case 261:
-                Log.i("ZOOMER","ZOOMING");
-                return true;
+        if (event.getPointerCount() == 2) {
+            touchCount++;
 
+            if(touchCount%5 != 0) return true;
+
+            BigDecimal down = dimension.getDown();
+            BigDecimal top = dimension.getTop();
+            BigDecimal left = dimension.getLeft();
+            BigDecimal right = dimension.getRight();
+            BigDecimal diameter = left.subtract(right);
+
+            int currentDiff = getDifference(event);
+
+            int action = event.getAction();
+            int mainAction = action & MotionEvent.ACTION_MASK;
+
+            if (mainAction == MotionEvent.ACTION_POINTER_DOWN) {
+                lastZoomDistance = getDifference(event);
+                Log.i("Zoom","Got first zoom event");
+            } else if(lastZoomDistance != -1) {
+
+                Log.i("Zoom","before zoom " + dimension);
+                if(lastZoomDistance > currentDiff) {
+                    diameter = diameter.divide(new BigDecimal(2), 12, RoundingMode.DOWN).divide(new BigDecimal(zoomFactor), 12, RoundingMode.DOWN);
+                    Log.i("Zoom","Zooming Up");
+
+
+//                    dimension = new Dimension(left.add(diameter), right.subtract(diameter), top.subtract(diameter), down.add(diameter));
+                } else  {
+                    diameter = diameter.divide(new BigDecimal(2),12,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(zoomFactor));
+
+                    Log.i("Zoom","Zooming Down " + diameter);
+                    BigDecimal midHor = getMiddle(left,right);
+                    BigDecimal midver = getMiddle(down,top);
+                    Log.i("Mitte", String.valueOf(midHor));
+                    dimension = new Dimension(midHor.subtract(diameter), midHor.add(diameter), midver.add(diameter), midver.subtract(diameter));
+                }
+                Log.i("Zoom","after zoom " + dimension);
+                Log.i("Zoom","using dimension " + diameter);
+            }
+
+
+            lastZoomDistance = currentDiff;
+
+            adapter.dimension = dimension;
+            HomeFragment.Companion.onResult(dimension.getLeft(), dimension.getTop(), diameter, adapter.itera);
+            homeFragment.updateUI();
+            return false;
+        } else switch (event.getAction()) {
             case (MotionEvent.ACTION_DOWN):
-                Log.i("Swipe direction","testDOWn");
+                Log.i("Swipe direction", "testDOWn");
                 x1 = event.getX();
                 y1 = event.getY();
                 return true;
@@ -134,7 +191,9 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
             case (MotionEvent.ACTION_MOVE): {
 
-                Log.i("Swipe direction","testUP");
+                lastZoomDistance = -1;
+
+                Log.i("Swipe direction", "testUP");
                 x2 = event.getX();
                 y2 = event.getY();
                 dx = x2 - x1;
@@ -146,7 +205,8 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                 BigDecimal left = dimension.getLeft();
                 BigDecimal right = dimension.getRight();
                 BigDecimal diameter = left.subtract(right).abs();
-                BigDecimal step = left.subtract(right).divide(new BigDecimal(100),2000,RoundingMode.DOWN);
+                System.out.println("DIAMETER" + diameter);
+                BigDecimal step = diameter.divide(new BigDecimal(100), 20, RoundingMode.DOWN);
 
                 touchCount++;
                 if (Math.abs(dx) > Math.abs(dy)) {
@@ -159,26 +219,24 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                     }
 
                 }
-                    if (dy > 0) {
-                        top = top.subtract(step);
-                        down = down.subtract(step);
-                    } else {
-                        top = top.add(step);
-                        down = down.add(step);
-                    }
+                if (dy > 0) {
+                    top = top.subtract(step);
+                    down = down.subtract(step);
+                } else {
+                    top = top.add(step);
+                    down = down.add(step);
+                }
 
 
-
-                dimension = new Dimension(left,right,top,down);
+                dimension = new Dimension(left, right, top, down);
                 adapter.dimension = dimension;
-                HomeFragment.Companion.onResult(dimension.getLeft(), dimension.getTop(),diameter, adapter.itera);
-                if(touchCount%4 == 0) {
+                HomeFragment.Companion.onResult(dimension.getLeft(), dimension.getTop(), diameter, adapter.itera);
+                if (touchCount % 4 == 0) {
                     touchCount = 0;
 
                 }
 
             }
-
 
 
         }
@@ -204,10 +262,10 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
         @Override
         protected void onPreExecute() {
             // Zuweisung einer einzigartigen ID
-            taskId = lastTask +2;
+            taskId = lastTask + 2;
             lastTask = taskId;
 
-            Log.i("TASK","TASK ID " + taskId + " started!");
+            Log.i("TASK", "TASK ID " + taskId + " started!");
         }
 
         @Override
@@ -226,7 +284,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
 
                 int width = (int) Math.pow(2, i);
-                if(i == 0) width = 1;
+                if (i == 0) width = 1;
 
                 int count;
 
@@ -250,7 +308,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                     if (screenY > getWidth()) break;
 
                     // Versuch der optimisation TODO erklaeren
-                    if( (screenY)%(width*2) == 0) continue;
+                    if ((screenY) % (width * 2) == 0) continue;
 
                     BigDecimal y = getPoint(tempDimension.getDown(), tempDimension.getTop(), count, j);
 
@@ -258,7 +316,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
                         screenX = k * width;
 
-                        if( (screenX)%(width*2) == 0) {
+                        if ((screenX) % (width * 2) == 0) {
                             continue;
                         }
 
@@ -270,7 +328,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                         // Frage Farben ab { @see FractalView.Adapter#onDraw(info : DrawInfo) }
                         inf = fractalView.getAdapter().onDraw(inf);
 
-                        if(inf.getColor() == -100)
+                        if (inf.getColor() == -100)
                             try {
                                 throw new Exception("Fehler: Farbe wurde NICHT definiert !");
                             } catch (Exception e) {
@@ -279,7 +337,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
 
                         // Setze Pixel
-                        RectF rectF = new RectF(inf.getScreenX(), inf.getScreenY(), inf.getScreenX() + width*2, inf.getScreenY() + width*2);
+                        RectF rectF = new RectF(inf.getScreenX(), inf.getScreenY(), inf.getScreenX() + width * 2, inf.getScreenY() + width * 2);
                         p.setColor(inf.getColor());
                         canvas.drawRect(rectF, p);
 
@@ -302,7 +360,8 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
     // Klasse, um seine eigenen Fraktale einzubinden
     public abstract static class Adapter {
 
-        public void onNewLine() {}
+        public void onNewLine() {
+        }
 
         protected static BigDecimal verhaeltnis;
         Dimension dimension;

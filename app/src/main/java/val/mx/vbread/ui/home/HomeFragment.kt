@@ -164,7 +164,8 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     fun updateUI() {
         yEditText.setText(currentAdapter!!.size.top.toDouble().toString())
-        xEditText.setText(currentAdapter!!.size.left.toDouble().toString())
+        xEditText.setText(currentAdapter!!.size.right.toDouble().toString())
+        ausschnittEditText.setText(currentAdapter!!.size.left.subtract(currentAdapter!!.size.right).toString())
     }
 }
 
