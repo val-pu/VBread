@@ -1,4 +1,5 @@
 package val.mx.vbread.views;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,13 +23,8 @@ import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
 import val.mx.vbread.ui.home.HomeFragment;
 
-/**
- * @author Lukas Hensel
- * @since 10 Nov. 15: 08 Geschichte PKT
- */
 
 public class FractalView extends androidx.appcompat.widget.AppCompatImageView implements View.OnTouchListener {
-    // Wunderschoene Variablen
 
     private int lastTask = 0;
     private Adapter adapter = null;
@@ -42,7 +38,6 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
         super(context, attrs);
         setOnTouchListener(this);
     }
-
 
 
     @SuppressLint("DrawAllocation")
@@ -63,9 +58,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
     }
 
 
-
     public void init() {
-
 
 
         dimension = adapter.getSize();
@@ -105,6 +98,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
     public Canvas getCanvas() {
         return canvas;
     }
+
     float x1 = 0, y1 = 0;
 
     private int touchCount = 0;
@@ -114,7 +108,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
         // Bewgen der
 
-        if(adapter == null) return false;
+        if (adapter == null) return false;
 
         float x2, y2, dx, dy;
         String direction;
@@ -122,11 +116,11 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
         switch (event.getAction()) {
 
             case 261:
-                Log.i("ZOOMER","ZOOMING");
+                Log.i("ZOOMER", "ZOOMING");
                 return true;
 
             case (MotionEvent.ACTION_DOWN):
-                Log.i("Swipe direction","testDOWn");
+                Log.i("Swipe direction", "testDOWn");
                 x1 = event.getX();
                 y1 = event.getY();
                 return true;
@@ -134,7 +128,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
             case (MotionEvent.ACTION_MOVE): {
 
-                Log.i("Swipe direction","testUP");
+                Log.i("Swipe direction", "testUP");
                 x2 = event.getX();
                 y2 = event.getY();
                 dx = x2 - x1;
@@ -146,7 +140,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                 BigDecimal left = dimension.getLeft();
                 BigDecimal right = dimension.getRight();
                 BigDecimal diameter = left.subtract(right).abs();
-                BigDecimal step = left.subtract(right).divide(new BigDecimal(100),2000,RoundingMode.DOWN);
+                BigDecimal step = left.subtract(right).divide(new BigDecimal(100), 2000, RoundingMode.DOWN);
 
                 touchCount++;
                 if (Math.abs(dx) > Math.abs(dy)) {
@@ -159,26 +153,24 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                     }
 
                 }
-                    if (dy > 0) {
-                        top = top.subtract(step);
-                        down = down.subtract(step);
-                    } else {
-                        top = top.add(step);
-                        down = down.add(step);
-                    }
+                if (dy > 0) {
+                    top = top.subtract(step);
+                    down = down.subtract(step);
+                } else {
+                    top = top.add(step);
+                    down = down.add(step);
+                }
 
 
-
-                dimension = new Dimension(left,right,top,down);
+                dimension = new Dimension(left, right, top, down);
                 adapter.dimension = dimension;
-                HomeFragment.Companion.onResult(dimension.getLeft(), dimension.getTop(),diameter, adapter.itera);
-                if(touchCount%4 == 0) {
+                HomeFragment.Companion.onResult(dimension.getLeft(), dimension.getTop(), diameter, adapter.itera);
+                if (touchCount % 4 == 0) {
                     touchCount = 0;
 
                 }
 
             }
-
 
 
         }
@@ -204,10 +196,10 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
         @Override
         protected void onPreExecute() {
             // Zuweisung einer einzigartigen ID
-            taskId = lastTask +2;
+            taskId = lastTask + 2;
             lastTask = taskId;
 
-            Log.i("TASK","TASK ID " + taskId + " started!");
+            Log.i("TASK", "TASK ID " + taskId + " started!");
         }
 
         private Float dicke = 1.8f;
@@ -228,7 +220,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
 
                 int width = (int) Math.pow(2, i);
-                if(i == 0) width = 1;
+                if (i == 0) width = 1;
 
                 int count;
 
@@ -252,7 +244,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                     if (screenY > getWidth()) break;
 
                     // Versuch der optimisation TODO erklaeren
-                    if( (screenY)%(width*2) == 0) continue;
+                    if ((screenY) % (width * 2) == 0) continue;
 
                     BigDecimal y = getPoint(tempDimension.getDown(), tempDimension.getTop(), count, j);
 
@@ -260,7 +252,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
                         screenX = k * width;
 
-                        if( (screenX)%(width*2) == 0) {
+                        if ((screenX) % (width * 2) == 0) {
                             continue;
                         }
 
@@ -272,7 +264,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                         // Frage Farben ab { @see FractalView.Adapter#onDraw(info : DrawInfo) }
                         inf = fractalView.getAdapter().onDraw(inf);
 
-                        if(inf.getColor() == -1)
+                        if (inf.getColor() == -1)
                             try {
                                 throw new Exception("Fehler: Farbe wurde NICHT definiert !");
                             } catch (Exception e) {
@@ -313,7 +305,8 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
     // Klasse, um seine eigenen Fraktale einzubinden
     public abstract static class Adapter {
 
-        public void onNewLine() {}
+        public void onNewLine() {
+        }
 
         protected static BigDecimal verhaeltnis;
         Dimension dimension;
