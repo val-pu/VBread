@@ -18,9 +18,7 @@ import androidx.annotation.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.TimerTask;
 
-import val.mx.vbread.R;
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
 import val.mx.vbread.ui.home.HomeFragment;
@@ -33,7 +31,7 @@ import val.mx.vbread.ui.home.HomeFragment;
 public class FractalView extends androidx.appcompat.widget.AppCompatImageView implements View.OnTouchListener {
     // Wunderschoene Variablen
 
-    private double zoomFactor = 1.2d;
+    private double zoomFactor = 1.0002d;
 
     private int lastTask = 0;
     private int lastZoomDistance = 0;
@@ -155,20 +153,23 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
             } else if(lastZoomDistance != -1) {
 
                 Log.i("Zoom","before zoom " + dimension);
+                BigDecimal midHor = getMiddle(left,right);
+                BigDecimal midver = getMiddle(down,top);
                 if(lastZoomDistance > currentDiff) {
                     diameter = diameter.divide(new BigDecimal(2), 12, RoundingMode.DOWN).divide(new BigDecimal(zoomFactor), 12, RoundingMode.DOWN);
                     Log.i("Zoom","Zooming Up");
+//                    dimension = new Dimension(midHor.subtract(diameter), midHor.add(diameter), midver.add(diameter), midver.subtract(diameter));
+
 
 
 //                    dimension = new Dimension(left.add(diameter), right.subtract(diameter), top.subtract(diameter), down.add(diameter));
                 } else  {
-                    diameter = diameter.divide(new BigDecimal(2),12,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(zoomFactor));
+                    diameter = diameter.divide(new BigDecimal(2),12,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(zoomFactor).abs());
 
                     Log.i("Zoom","Zooming Down " + diameter);
-                    BigDecimal midHor = getMiddle(left,right);
-                    BigDecimal midver = getMiddle(down,top);
+
                     Log.i("Mitte", String.valueOf(midHor));
-                    dimension = new Dimension(midHor.subtract(diameter), midHor.add(diameter), midver.add(diameter), midver.subtract(diameter));
+                    dimension = new Dimension(midHor.add(diameter), midHor.subtract(diameter), midver.subtract(diameter), midver.add(diameter));
                 }
                 Log.i("Zoom","after zoom " + dimension);
                 Log.i("Zoom","using dimension " + diameter);
@@ -183,7 +184,6 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
             return false;
         } else switch (event.getAction()) {
             case (MotionEvent.ACTION_DOWN):
-                Log.i("Swipe direction", "testDOWn");
                 x1 = event.getX();
                 y1 = event.getY();
                 return true;
@@ -193,7 +193,6 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
                 lastZoomDistance = -1;
 
-                Log.i("Swipe direction", "testUP");
                 x2 = event.getX();
                 y2 = event.getY();
                 dx = x2 - x1;
@@ -205,7 +204,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                 BigDecimal left = dimension.getLeft();
                 BigDecimal right = dimension.getRight();
                 BigDecimal diameter = left.subtract(right).abs();
-                System.out.println("DIAMETER" + diameter);
+//                System.out.println("DIAMETER" + diameter);
                 BigDecimal step = diameter.divide(new BigDecimal(100), 20, RoundingMode.DOWN);
 
                 touchCount++;
