@@ -31,7 +31,7 @@ import val.mx.vbread.ui.home.HomeFragment;
 public class FractalView extends androidx.appcompat.widget.AppCompatImageView implements View.OnTouchListener {
     // Wunderschoene Variablen
 
-    private double zoomFactor = 1.0002d;
+    private double zoomFactor = 1.00002d;
 
     private int lastTask = 0;
     private int lastZoomDistance = 0;
@@ -164,23 +164,24 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
 //                    dimension = new Dimension(left.add(diameter), right.subtract(diameter), top.subtract(diameter), down.add(diameter));
                 } else  {
-                    diameter = diameter.divide(new BigDecimal(2),12,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(zoomFactor).abs());
+                    diameter = diameter.divide(new BigDecimal(2),12,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(zoomFactor));
 
                     Log.i("Zoom","Zooming Down " + diameter);
 
                     Log.i("Mitte", String.valueOf(midHor));
-                    dimension = new Dimension(midHor.add(diameter), midHor.subtract(diameter), midver.subtract(diameter), midver.add(diameter));
+                    dimension = new Dimension(midHor.subtract(diameter), midHor.add(diameter), midver.add(diameter), midver.subtract(diameter));
                 }
                 Log.i("Zoom","after zoom " + dimension);
                 Log.i("Zoom","using dimension " + diameter);
+                adapter.dimension = dimension;
+                HomeFragment.Companion.onResult(dimension.getLeft(), dimension.getDown(), diameter, adapter.itera);
+                homeFragment.updateUI();
             }
 
 
             lastZoomDistance = currentDiff;
 
-            adapter.dimension = dimension;
-            HomeFragment.Companion.onResult(dimension.getLeft(), dimension.getTop(), diameter, adapter.itera);
-            homeFragment.updateUI();
+
             return false;
         } else switch (event.getAction()) {
             case (MotionEvent.ACTION_DOWN):
@@ -228,7 +229,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
 
                 dimension = new Dimension(left, right, top, down);
-                adapter.dimension = dimension;
+//                adapter.dimension = dimension;
                 HomeFragment.Companion.onResult(dimension.getLeft(), dimension.getTop(), diameter, adapter.itera);
                 if (touchCount % 4 == 0) {
                     touchCount = 0;

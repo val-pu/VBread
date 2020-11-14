@@ -45,7 +45,8 @@
                 android:layout_height="wrap_content"
                 android:text="Y- Koordinate"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/posXEditText" />
+                app:layout_constraintTop_toBottomOf="@+id/posXEditText"
+                tools:ignore="HardcodedText" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
@@ -81,7 +82,8 @@
                     android:textColor="#000"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="HardcodedText" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <EditText
@@ -94,7 +96,8 @@
                 android:text="-2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView3"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,LabelFor,TextFields"
+                android:importantForAutofill="no" />
 
             <EditText
                 android:id="@+id/posAusschnittEditText"
@@ -106,7 +109,8 @@
                 android:padding="5dp"
                 android:text="4"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+                app:layout_constraintTop_toBottomOf="@+id/textView8"
+                tools:ignore="Autofill,HardcodedText,LabelFor" />
 
             <EditText
                 android:id="@+id/posYEditText"
@@ -118,7 +122,8 @@
                 android:text="2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView5"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,LabelFor,TextFields"
+                android:importantForAutofill="no" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -172,7 +177,8 @@
                 android:layout_height="wrap_content"
                 android:text="Iterationen"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/posAusschnittEditText" />
+                app:layout_constraintTop_toBottomOf="@+id/posAusschnittEditText"
+                tools:ignore="HardcodedText" />
 
             <EditText
                 android:id="@+id/iterationen"
@@ -184,7 +190,9 @@
                 android:padding="2dp"
                 android:text="30"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iterationenText" />
+                app:layout_constraintTop_toBottomOf="@+id/iterationenText"
+                tools:ignore="HardcodedText"
+                android:importantForAutofill="no" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -194,11 +202,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:padding="4dp"
+            android:padding="1dp"
             android:background="@drawable/circle_cardback"
             android:layout_weight="2"
             android:src="@drawable/ic_baseline_arrow_drop_up_24"
             app:layout_constraintBottom_toTopOf="@+id/editables"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/palette_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="2"
+            android:background="@drawable/circle_cardback"
+            android:padding="2dp"
+            android:src="@drawable/ic_baseline_color_lens_24"
+            app:layout_constraintBottom_toTopOf="@+id/editables_inflater"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="ContentDescription" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
