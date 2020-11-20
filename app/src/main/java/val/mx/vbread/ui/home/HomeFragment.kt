@@ -2,6 +2,7 @@ package `val`.mx.vbread.ui.home
 
 import `val`.mx.vbread.R
 import `val`.mx.vbread.containers.Dimension
+import `val`.mx.vbread.ui.popups.ColorPickerBottomSheet
 import `val`.mx.vbread.views.FractalView
 import `val`.mx.vbread.views.JuliaBrotAdapter
 import `val`.mx.vbread.views.MandelBrotAdapter
@@ -73,6 +74,12 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
             fractalView.invalidate()
             fractalView.adapter = currentAdapter
+        }
+
+        palette_picker.setOnClickListener {
+
+            ColorPickerBottomSheet().show(childFragmentManager,"picker")
+
         }
 
         btn.setOnClickListener {
