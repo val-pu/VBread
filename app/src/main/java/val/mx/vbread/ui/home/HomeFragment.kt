@@ -4,12 +4,13 @@ import `val`.mx.vbread.R
 import `val`.mx.vbread.containers.Dimension
 import `val`.mx.vbread.ui.popups.ColorPickerBottomSheet
 import `val`.mx.vbread.views.FractalView
-import `val`.mx.vbread.views.JuliaBrotAdapter
-import `val`.mx.vbread.views.MandelBrotAdapter
+import `val`.mx.vbread.adapters.MandelBrotAdapter
+import `val`.mx.vbread.adapters.RandomBrotAdapter
+import `val`.mx.vbread.ui.popups.FractalPickerPopUp
+import `val`.mx.vbread.views.FractalView.adapter
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -19,9 +20,7 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.askthing.*
 import kotlinx.android.synthetic.main.fragment_home.*
-import java.lang.Exception
 import java.math.BigDecimal
 import java.util.*
 
@@ -40,7 +39,6 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     private lateinit var xEditText: EditText
     private lateinit var yEditText: EditText
-    lateinit var iterEditText: EditText
     private lateinit var ausschnittEditText: EditText
     private lateinit var btn: Button
     private lateinit var btnFraktal: Button
@@ -61,11 +59,11 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         yEditText = view.findViewById(R.id.posYEditText)
         ausschnittEditText = view.findViewById(R.id.posAusschnittEditText)
         editables = view.findViewById(R.id.editables)
-        editablesInflater = view.findViewById(R.id.editables_inflater)
+        editablesInflater = view.findViewById(R.id.value_editor_inflater)
 
         editablesInflater.setOnClickListener {
 
-            if(editables.visibility.equals(VISIBLE)) {
+            if(editables.visibility == VISIBLE) {
                 editablesInflater.setImageDrawable(resources.getDrawable( R.drawable.ic_baseline_arrow_drop_up_24))
                 editables.visibility = GONE
             } else {
@@ -73,12 +71,12 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 editablesInflater.setImageDrawable(resources.getDrawable( R.drawable.ic_baseline_fullscreen_24))
             }
             fractalView.invalidate()
-            fractalView.adapter = currentAdapter
+            fractalView.adapter = adapter
         }
 
         palette_picker.setOnClickListener {
 
-            ColorPickerBottomSheet().show(childFragmentManager,"picker")
+            ColorPickerBottomSheet(fractalView).show(childFragmentManager,"picker")
 
         }
 
@@ -88,7 +86,7 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                     BigDecimal(xEditText.text.toString()),
                     BigDecimal(yEditText.text.toString()),
                     BigDecimal(ausschnittEditText.text.toString()),
-                    Integer.parseInt(iterationen.text.toString())
+                    Integer.parseInt(iterations.text.toString())
                 )
             } catch (ex: Exception) {
                 Snackbar.make(requireView(), "Fehler bei Eingabe. Bitte wiederholen.", 1)
@@ -97,19 +95,26 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
         button_speichern.setOnClickListener {
-            if (fractalView.bitmap != null)
+            if (fractalView.bitmap != null) {
+
+                val imgName = UUID.randomUUID().toString()
                 MediaStore.Images.Media.insertImage(
                     view.context.contentResolver,
                     fractalView.bitmap,
-                    UUID.randomUUID().toString(),
+                    imgName,
                     ""
                 )
+
+                Snackbar.make(view, "Bild als $imgName.png gespeichert!",Snackbar.LENGTH_LONG).show()
+
+            }
         }
 
-        btnFraktal.setOnClickListener {
-            Toast.makeText(view.context, "Fraktal geändert!", Toast.LENGTH_LONG).show()
-            fraktal = !fraktal
+        fractal_picker_icon.setOnClickListener {
+            FractalPickerPopUp(fractalView).show(childFragmentManager,"ok")
         }
+
+
 
         seekBar.setOnSeekBarChangeListener(this)
 
@@ -119,23 +124,14 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     companion object Companion {
         private lateinit var fractalView1: FractalView
-        private var currentAdapter: FractalView.Adapter? = null
 
-        private var fraktal: Boolean = false
-
-
-        public fun onResult(
+        fun onResult(
             xs: BigDecimal,
             ys: BigDecimal,
             ye: BigDecimal,
             iteras: Int,
         ) {
-            val adapter: FractalView.Adapter = if (fraktal) {
-                JuliaBrotAdapter()
-            } else {
-                MandelBrotAdapter()
-            }
-
+            if(adapter == null) return
 
             val d = Dimension(
                 (xs),
@@ -145,14 +141,13 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             )
 
 
-            adapter.run {
+            adapter!!.run {
                 setItera(iteras)
                 setDimension(
                     d
                 )
             }
-            Log.e("DIMENSION", d.toString())
-            currentAdapter = adapter
+            
             fractalView1.adapter = adapter
 
         }
@@ -164,15 +159,16 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
 
-        if (currentAdapter == null) return
-        currentAdapter!!.itera = seekBar!!.progress * 3
-        fractalView.adapter = currentAdapter!!
+
+        if (adapter == null) return
+        adapter!!.itera = seekBar!!.progress * 3
+        fractalView.adapter = adapter!!
     }
 
     fun updateUI() {
-        yEditText.setText(currentAdapter!!.size.top.toDouble().toString())
-        xEditText.setText(currentAdapter!!.size.left.toDouble().toString())
-        ausschnittEditText.setText(currentAdapter!!.size.left.subtract(currentAdapter!!.size.right).toString())
+        yEditText.setText(adapter!!.dimension.top.toDouble().toString())
+        xEditText.setText(adapter!!.dimension.left.toDouble().toString())
+        ausschnittEditText.setText(adapter!!.dimension.left.subtract(adapter!!.dimension.right).toString())
     }
 }
 

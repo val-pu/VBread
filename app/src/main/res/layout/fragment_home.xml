@@ -52,6 +52,7 @@
                 android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="3dp"
                 android:background="#FFF"
                 android:elevation="4dp"
                 android:padding="3dp"
@@ -88,20 +89,20 @@
 
             <EditText
                 android:id="@+id/posXEditText"
-                style="@style/editText"
+                style="@style/user_edit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:importantForAutofill="no"
                 android:padding="5dp"
                 android:text="-2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView3"
-                tools:ignore="HardcodedText,LabelFor,TextFields"
-                android:importantForAutofill="no" />
+                tools:ignore="HardcodedText,LabelFor,TextFields" />
 
             <EditText
                 android:id="@+id/posAusschnittEditText"
-                style="@style/editText"
+                style="@style/user_edit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -114,16 +115,16 @@
 
             <EditText
                 android:id="@+id/posYEditText"
-                style="@style/editText"
+                style="@style/user_edit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:importantForAutofill="no"
                 android:padding="5dp"
                 android:text="2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView5"
-                tools:ignore="HardcodedText,LabelFor,TextFields"
-                android:importantForAutofill="no" />
+                tools:ignore="HardcodedText,LabelFor,TextFields" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -181,30 +182,30 @@
                 tools:ignore="HardcodedText" />
 
             <EditText
-                android:id="@+id/iterationen"
-                style="@style/editText"
+                android:id="@+id/iterations"
+                style="@style/user_edit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:importantForAutofill="no"
                 android:inputType="numberSigned"
                 android:padding="2dp"
                 android:text="30"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iterationenText"
-                tools:ignore="HardcodedText"
-                android:importantForAutofill="no" />
+                tools:ignore="HardcodedText" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
 
-            android:id="@+id/editables_inflater"
+            android:id="@+id/value_editor_inflater"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:padding="1dp"
-            android:background="@drawable/circle_cardback"
             android:layout_weight="2"
+            android:background="@drawable/circle_cardback"
+            android:padding="4dp"
             android:src="@drawable/ic_baseline_arrow_drop_up_24"
             app:layout_constraintBottom_toTopOf="@+id/editables"
             app:layout_constraintStart_toStartOf="parent"
@@ -219,8 +220,34 @@
             android:background="@drawable/circle_cardback"
             android:padding="2dp"
             android:src="@drawable/ic_baseline_color_lens_24"
-            app:layout_constraintBottom_toTopOf="@+id/editables_inflater"
+            app:layout_constraintBottom_toTopOf="@+id/value_editor_inflater"
             app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/reset_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:layout_weight="2"
+            android:background="@drawable/circle_cardback"
+            android:padding="2dp"
+            android:src="@drawable/restore_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fractal_picker_icon"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/fractal_picker_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:layout_weight="2"
+            android:background="@drawable/circle_cardback"
+            android:padding="4dp"
+            android:src="@drawable/ic_baseline_settings_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

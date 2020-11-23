@@ -2,16 +2,14 @@ package val.mx.vbread.containers;
 
 import androidx.annotation.ColorInt;
 
-import java.math.BigDecimal;
-
 public class DrawInfo {
-    private final BigDecimal x;
-    private final BigDecimal y;
+    private final double x;
+    private final double y;
     private final int screenX;
     private final int screenY;
     private int color = -100;
 
-    public DrawInfo(BigDecimal x, BigDecimal y, int screenX, int screenY) {
+    public DrawInfo(double x, double y, int screenX, int screenY) {
         this.x = x;
         this.y = y;
         this.screenX = screenX;
@@ -35,11 +33,11 @@ public class DrawInfo {
         return screenY;
     }
 
-    public BigDecimal getX() {
+    public double getX() {
         return x;
     }
 
-    public BigDecimal getY() {
+    public double getY() {
         return y;
     }
 }

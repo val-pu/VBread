@@ -5,13 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.widget.ImageView;
 
 import java.util.LinkedList;
 
@@ -75,7 +72,6 @@ public class ColorDisplayView extends androidx.appcompat.widget.AppCompatImageVi
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        initSampleData();
     }
 
     private void initSampleData() {
