@@ -4,6 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:padding="4dp"
+    android:paddingHorizontal="5dp"
+    android:background="@drawable/text_gradient"
     android:layout_height="wrap_content">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -14,8 +17,11 @@
         app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
     <TextView
+        android:textColor="@color/colorAccentLight"
         android:id="@+id/textView12"
-        android:layout_width="wrap_content"
+        android:padding="5dp"
+        android:textSize="20sp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Fraktal wählen"
         app:layout_constraintStart_toStartOf="parent"

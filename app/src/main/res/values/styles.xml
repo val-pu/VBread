@@ -42,4 +42,11 @@
         <item name="android:background">@color/colorAccentGray</item>
     </style>
 
+    <style name="clickableIcon">
+        <item name="elevation">2dp</item>
+        <item name="background">@drawable/circle_cardback</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+
+    </style>
+
 </resources>

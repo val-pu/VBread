@@ -59,16 +59,18 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 
         super.onLayout(changed, left, top, right, bottom);
-        getRootView().post(() -> {
-            bitmap = Bitmap.createBitmap(
-                    getMeasuredWidth(),
-                    getMeasuredHeight(),
-                    Bitmap.Config.ARGB_8888);
+        if (canvas == null)
+            getRootView().post(() -> {
+                bitmap = Bitmap.createBitmap(
+                        getMeasuredWidth(),
+                        getMeasuredHeight(),
+                        Bitmap.Config.ARGB_8888);
 
-            canvas = new Canvas(bitmap);
-            setBackgroundDrawable(new BitmapDrawable(bitmap));
-//            init();
-        });
+                canvas = new Canvas(bitmap);
+                setBackgroundDrawable(new BitmapDrawable(bitmap));
+                adapter = new MandelBrotAdapter();
+                init();
+            });
     }
 
 
@@ -87,9 +89,10 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
         task.execute();
     }
 
+    @SuppressLint("Assert")
     public void setAdapter(Adapter adapter) {
         assert getWidth() != 0;
-        this.adapter = adapter;
+        FractalView.adapter = adapter;
         init();
     }
 
@@ -129,12 +132,6 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
         return (int) Math.sqrt(Math.pow(dy, 2) * Math.pow(dx, 2));
     }
-
-    private BigDecimal getMiddle(BigDecimal b1, BigDecimal b2) {
-        return b2.add(b1).divide(new BigDecimal(2), 20, RoundingMode.DOWN);
-    }
-
-    boolean lastAction = false;
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -229,21 +226,19 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                     stepX = stepY = step;
                     // Hinzufügen eines schnelleren swipe effektes
                     if (lastEvent != null) {
-                        double difference = getDifference(dx, dy);
-                        System.out.println("Diffrence " + difference);
-                        stepX = step.multiply(BigDecimal.valueOf(1 + ( dx) / 100D));
-                        stepY = step.multiply(BigDecimal.valueOf(1 + ( dy) / 100D));
+                        stepX = step.multiply(BigDecimal.valueOf(1 + (dx) / 100D));
+                        stepY = step.multiply(BigDecimal.valueOf(1 + (dy) / 100D));
                     }
 
                     touchCount++;
 
-                        if (dx > 0) {
-                            left = left.subtract(stepX);
-                            right = right.subtract(stepX);
-                        } else {
-                            left = left.add(stepX);
-                            right = right.add(stepX);
-                        }
+                    if (dx > 0) {
+                        left = left.subtract(stepX);
+                        right = right.subtract(stepX);
+                    } else {
+                        left = left.add(stepX);
+                        right = right.add(stepX);
+                    }
 
 
                     if (dy > 0) {
@@ -276,10 +271,6 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
         return false;
     }
 
-    private double getDifference(float dx, float dy) {
-        return  Math.sqrt(Math.pow(dx, 2) * Math.pow(dy, 2));
-    }
-
     public void setColorPalette(ColorPalette palette) {
         this.palette = palette;
     }
@@ -301,9 +292,25 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
      * Berechnung im Hintergrund, um Rechenleistung zu verteilen
      */
     private class DrawTask extends AsyncTask<Void, Void, Void> {
+        private int yAdd = 0;
+        private int teiler = 1;
+        private int i = 1;
+        int dy = getWidth();
         private Paint p = new Paint();
         private FractalView fractalView;
         private int taskId;
+
+        public DrawTask() {
+            this(3, 1);
+        }
+
+        public DrawTask(int teiler, int i) {
+
+            this.teiler = teiler;
+            this.i = i;
+            this.yAdd = getWidth() / teiler * (i - 1);
+            dy = getWidth() / teiler * (i);
+        }
 
         public DrawTask(FractalView view) {
             this.fractalView = view;
@@ -327,18 +334,24 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
             Canvas canvas = fractalView.getCanvas();
 
+            initGetPoints(tempDimension.getDown(), tempDimension.getTop(), teiler);
 
-            // Label um diese Schleife ggf. zu zerstören
+            BigDecimal top = BigDecimal.valueOf(getPoint(i));
+            BigDecimal low = BigDecimal.valueOf(getPoint(i - 1));
+            int dy = getWidth() - yAdd;
             for (int i = 5; 0 <= i; i--) {
 
 
                 int width = (int) Math.pow(2, i);
                 if (i == 0) width = 1;
 
-                int count;
+                int countX, countY;
 
-                if (getWidth() % width == 0) count = getWidth() / width;
-                else count = getWidth() / width + 1;
+                if (getWidth() % width == 0) countX = getWidth() / width;
+                else countX = getWidth() / width + 1;
+
+                if (getWidth() % width == 0) countY = (dy - yAdd) / width;
+                else countY = (dy - yAdd) / width + 1;
 
                 int screenX, screenY;
 
@@ -351,19 +364,20 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                     // Falls ein neuer Zeichenprozess erstellt wird wird dieser Unterbrochen
 
 
-                    screenY = j * width;
+                    screenY = j * width + yAdd;
 
                     // Falls die maximale anzahl horizontaler Pixel ueberschritten wird, so
-                    if (screenY > getWidth()) break;
+                    if (screenY > dy) break;
 
                     // Versuch der optimisation TODO erklaeren
-                    if ((screenY) % (width * 2) == 0) continue;
+                    if (screenY != 0)
+                        if ((screenY) % (width * 2) == 0) continue;
 
-                    initGetPoints(tempDimension.getDown(), tempDimension.getTop(), count);
+                    initGetPoints(low, top, countY);
 
                     double y = getPoint(j);
 
-                    initGetPoints(tempDimension.getLeft(), tempDimension.getRight(), count);
+                    initGetPoints(tempDimension.getLeft(), tempDimension.getRight(), countX);
                     for (int k = 0; true; k++) {
 
                         screenX = k * width;
@@ -375,7 +389,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                         if (screenX > getWidth()) break;
 
                         // Initialisiere Berechnungsgrundlage
-                        DrawInfo inf = new DrawInfo(getPoint(/*tempDimension.getLeft(), tempDimension.getRight(), count,*/ k), y, k * (width), j * (int) width);
+                        DrawInfo inf = new DrawInfo(getPoint(/*tempDimension.getLeft(), tempDimension.getRight(), countX,*/ k), y, k * (width), j * (int) width);
 
                         // Frage Farben ab { @see FractalView.Adapter#onDraw(info : DrawInfo) }
                         inf = fractalView.getAdapter().onDraw(inf);

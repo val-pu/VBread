@@ -32,7 +32,7 @@ public class VComplex {
                 imag * complex.real + imag * complex.real);
     }
 
-    public VComplex multiply(int fac) {
+    public VComplex multiply(double fac) {
         return new VComplex(real * fac, imag * fac);
     }
 

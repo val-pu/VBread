@@ -37,12 +37,6 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
-    private lateinit var xEditText: EditText
-    private lateinit var yEditText: EditText
-    private lateinit var ausschnittEditText: EditText
-    private lateinit var btn: Button
-    private lateinit var btnFraktal: Button
-    private lateinit var btnSpeichern: Button
     private lateinit var seekBar: SeekBar
     private lateinit var editablesInflater: ImageView
     lateinit var editables: ConstraintLayout
@@ -51,24 +45,18 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fractalView1 = view.findViewById(R.id.fractalView)
-        btnSpeichern = view.findViewById(R.id.button_speichern)
-        btnFraktal = view.findViewById(R.id.button3)
-        btn = view.findViewById(R.id.button)
         seekBar = view.findViewById(R.id.seekBar)
-        xEditText = view.findViewById(R.id.posXEditText)
-        yEditText = view.findViewById(R.id.posYEditText)
-        ausschnittEditText = view.findViewById(R.id.posAusschnittEditText)
         editables = view.findViewById(R.id.editables)
         editablesInflater = view.findViewById(R.id.value_editor_inflater)
 
         editablesInflater.setOnClickListener {
 
-            if(editables.visibility == VISIBLE) {
-                editablesInflater.setImageDrawable(resources.getDrawable( R.drawable.ic_baseline_arrow_drop_up_24))
+            if (editables.visibility == VISIBLE) {
+                editablesInflater.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_build_24))
                 editables.visibility = GONE
             } else {
                 editables.visibility = VISIBLE
-                editablesInflater.setImageDrawable(resources.getDrawable( R.drawable.ic_baseline_fullscreen_24))
+                editablesInflater.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_fullscreen_24))
             }
             fractalView.invalidate()
             fractalView.adapter = adapter
@@ -76,16 +64,16 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
         palette_picker.setOnClickListener {
 
-            ColorPickerBottomSheet(fractalView).show(childFragmentManager,"picker")
+            ColorPickerBottomSheet(fractalView).show(childFragmentManager, "picker")
 
         }
 
-        btn.setOnClickListener {
+        button.setOnClickListener {
             try {
                 onResult(
-                    BigDecimal(xEditText.text.toString()),
-                    BigDecimal(yEditText.text.toString()),
-                    BigDecimal(ausschnittEditText.text.toString()),
+                    BigDecimal(posXEditText.text.toString()),
+                    BigDecimal(posYEditText.text.toString()),
+                    BigDecimal(posAusschnittEditText.text.toString()),
                     Integer.parseInt(iterations.text.toString())
                 )
             } catch (ex: Exception) {
@@ -94,7 +82,13 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
 
-        button_speichern.setOnClickListener {
+        reset_button.setOnClickListener {
+            fractalView.adapter.dimension = null
+            fractalView.adapter = adapter
+            updateUI()
+        }
+
+        icon_save.setOnClickListener {
             if (fractalView.bitmap != null) {
 
                 val imgName = UUID.randomUUID().toString()
@@ -105,13 +99,14 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                     ""
                 )
 
-                Snackbar.make(view, "Bild als $imgName.png gespeichert!",Snackbar.LENGTH_LONG).show()
+                Snackbar.make(view, "Bild als $imgName.png gespeichert!", Snackbar.LENGTH_LONG)
+                    .show()
 
             }
         }
 
         fractal_picker_icon.setOnClickListener {
-            FractalPickerPopUp(fractalView).show(childFragmentManager,"ok")
+            FractalPickerPopUp(fractalView).show(childFragmentManager, "ok")
         }
 
 
@@ -131,7 +126,7 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             ye: BigDecimal,
             iteras: Int,
         ) {
-            if(adapter == null) return
+            if (adapter == null) return
 
             val d = Dimension(
                 (xs),
@@ -143,11 +138,9 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
             adapter!!.run {
                 setItera(iteras)
-                setDimension(
-                    d
-                )
+                dimension = d
             }
-            
+
             fractalView1.adapter = adapter
 
         }
@@ -166,9 +159,12 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     }
 
     fun updateUI() {
-        yEditText.setText(adapter!!.dimension.top.toDouble().toString())
-        xEditText.setText(adapter!!.dimension.left.toDouble().toString())
-        ausschnittEditText.setText(adapter!!.dimension.left.subtract(adapter!!.dimension.right).toString())
+        posYEditText.setText(adapter!!.dimension.top.toDouble().toString())
+        posXEditText.setText(adapter!!.dimension.left.toDouble().toString())
+        iterations.setText(adapter.itera.toString())
+        posAusschnittEditText.setText(
+            adapter!!.dimension.left.subtract(adapter!!.dimension.right).abs().toFloat().toString()
+        )
     }
 }
 

@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
-            android:background="@color/colorPrimaryDark"
+            android:background="@drawable/text_gradient"
             android:paddingHorizontal="3dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -47,45 +47,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/posXEditText"
                 tools:ignore="HardcodedText" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                android:background="#FFF"
-                android:elevation="4dp"
-                android:padding="3dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="UnusedAttribute">
-
-                <SeekBar
-                    android:id="@+id/seekBar"
-                    android:layout_width="397dp"
-                    android:layout_height="wrap_content"
-                    android:background="@color/colorPrimaryDark"
-                    android:elevation="2dp"
-                    android:padding="5dp"
-                    android:progress="10"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView9" />
-
-                <TextView
-                    android:id="@+id/textView9"
-                    style="@style/TextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Detailgrad"
-                    android:textColor="#000"
-                    android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="HardcodedText" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <EditText
                 android:id="@+id/posXEditText"
@@ -109,7 +70,7 @@
                 android:inputType="numberDecimal"
                 android:padding="5dp"
                 android:text="4"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView8"
                 tools:ignore="Autofill,HardcodedText,LabelFor" />
 
@@ -133,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:text="X- Koordinate"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/textView8"
@@ -141,35 +102,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Größe des Ausschnitts"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/posYEditText" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/button"
                 style="@style/btn"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Zeichnen"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
-
-            <Button
-                android:id="@+id/button_speichern"
-                style="@style/btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Speichern"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button" />
-
-            <Button
-                android:id="@+id/button3"
-                style="@style/btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Fraktal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button_speichern" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/posYEditText" />
 
             <TextView
                 android:id="@+id/iterationenText"
@@ -177,7 +122,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Iterationen"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/posAusschnittEditText"
                 tools:ignore="HardcodedText" />
 
@@ -189,29 +134,43 @@
                 android:ems="10"
                 android:importantForAutofill="no"
                 android:inputType="numberSigned"
-                android:padding="2dp"
+                android:padding="5dp"
                 android:text="30"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iterationenText"
                 tools:ignore="HardcodedText" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
-
+            style="@style/clickableIcon"
             android:id="@+id/value_editor_inflater"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="2"
             android:background="@drawable/circle_cardback"
-            android:padding="4dp"
+            android:padding="8dp"
             android:src="@drawable/ic_baseline_arrow_drop_up_24"
-            app:layout_constraintBottom_toTopOf="@+id/editables"
+            app:layout_constraintBottom_toTopOf="@+id/seekBar"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="ContentDescription" />
 
         <ImageView
+            android:id="@+id/icon_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="2"
+            android:background="@drawable/circle_cardback"
+            android:padding="12dp"
+            android:src="@drawable/ic_baseline_save_24"
+            app:layout_constraintBottom_toTopOf="@+id/seekBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            style="@style/clickableIcon"
             android:id="@+id/palette_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -225,6 +184,7 @@
             tools:ignore="ContentDescription" />
 
         <ImageView
+            style="@style/clickableIcon"
             android:id="@+id/reset_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -238,6 +198,7 @@
             tools:ignore="ContentDescription" />
 
         <ImageView
+            style="@style/clickableIcon"
             android:id="@+id/fractal_picker_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -249,5 +210,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/title_gradient"
+            android:elevation="4dp"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:progress="10"
+            app:layout_constraintBottom_toTopOf="@+id/editables"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/fractal_picker_icon"
+            app:layout_constraintStart_toEndOf="@+id/fractal_picker_icon"
+            app:layout_constraintTop_toTopOf="@+id/fractal_picker_icon"
+            app:srcCompat="@drawable/ic_baseline_fiber_new_24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
