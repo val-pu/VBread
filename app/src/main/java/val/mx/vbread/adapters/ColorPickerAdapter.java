@@ -18,6 +18,7 @@ import val.mx.vbread.views.FractalView;
 public class ColorPickerAdapter extends RecyclerView.Adapter<ColorPickerAdapter.ViewHolder> {
 
     private LayoutInflater inflater;
+    // test
     private LinkedList<ColorPalette> dataSet;
     private FractalView fractalView;
 
