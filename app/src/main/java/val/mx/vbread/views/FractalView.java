@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.LinkedList;
 
 import val.mx.vbread.adapters.FractalPickerAdapter;
 import val.mx.vbread.adapters.MandelBrotAdapter;
@@ -40,7 +42,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
     private double zoomFactor = .90d;
     private MotionEvent lastEvent = null;
 
-    private int lastTask = 0;
+    private int lastTask = 1;
     private int lastZoomDistance = 0;
     public static Adapter adapter = new MandelBrotAdapter();
     private Bitmap bitmap;
@@ -51,6 +53,25 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
     public FractalView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+
+        palette = new ColorPalette("Standard", Color.BLACK,
+                Color.rgb(9, 1, 47),
+                Color.rgb(4, 4, 73),
+                Color.rgb(0, 7, 100),
+                Color.rgb(12, 44, 138),
+                Color.rgb(24, 82, 177),
+                Color.rgb(57, 125, 209),
+                Color.rgb(134, 181, 229),
+                Color.rgb(211, 236, 248),
+                Color.rgb(241, 233, 191),
+                Color.rgb(248, 201, 95),
+                Color.rgb(255, 170, 0),
+                Color.rgb(204, 128, 0),
+                Color.rgb(153, 87, 0),
+                Color.rgb(106, 52, 3)
+                //SOURCE https://stackoverflow.com/questions/16500656/which-color-gradient-is-used-to-color-mandelbrot-in-wikipedia
+        );
+
         setOnTouchListener(this);
     }
 
@@ -71,6 +92,18 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                 adapter = new MandelBrotAdapter();
                 init();
             });
+        else {
+
+            if(bitmap.getHeight() == getHeight()) return;
+            bitmap = Bitmap.createBitmap(
+                    getMeasuredWidth(),
+                    getMeasuredHeight(),
+                    Bitmap.Config.ARGB_8888);
+
+            canvas = new Canvas(bitmap);
+            setBackgroundDrawable(new BitmapDrawable(bitmap));
+            setAdapter(adapter);
+        }
     }
 
 
@@ -83,10 +116,18 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
         Adapter.verhaeltnis = ratio;*/
 
         Log.i("Zeichnen", "Zeichenprozess hat begonnen Dimension ist " + adapter.dimension);
-
-        DrawTask task = new DrawTask(this);
-
+        DrawTask task;
+        task = new DrawTask(this,1,1,true);
         task.execute();
+//        task = new DrawTask(this,2,2,false);
+//        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//        task = new DrawTask(this,2,2,false);
+//        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//        task = new DrawTask(this,2,2,true);
+//        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//        task = new DrawTask(this,3,3,false);
+//        task.execute();
+
     }
 
     @SuppressLint("Assert")
@@ -291,36 +332,41 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
     /**
      * Berechnung im Hintergrund, um Rechenleistung zu verteilen
      */
+    private static int redrawStatus = 0;
+    @SuppressLint("StaticFieldLeak")
     private class DrawTask extends AsyncTask<Void, Void, Void> {
-        private int yAdd = 0;
-        private int teiler = 1;
-        private int i = 1;
-        int dy = getWidth();
+        private double yAdd;
+        private int teiler;
+        private int i;
+        double dy;
         private Paint p = new Paint();
         private FractalView fractalView;
-        private int taskId;
+        private int taskId = -1;
 
-        public DrawTask() {
-            this(3, 1);
-        }
 
-        public DrawTask(int teiler, int i) {
-
+        public DrawTask(FractalView view,int teiler, int i, boolean newId) {
+            if (!newId)
+                taskId = lastTask;
+            else redrawStatus = 0;
             this.teiler = teiler;
             this.i = i;
-            this.yAdd = getWidth() / teiler * (i - 1);
-            dy = getWidth() / teiler * (i);
-        }
+            double step = (getWidth() /  ((double)teiler));
 
-        public DrawTask(FractalView view) {
+
+
+            this.yAdd = step * (i - 1);
+            this.dy = step * (i);
             this.fractalView = view;
-        }
 
+            System.out.printf("yd %s Yadd %s",dy, yAdd);
+        }
         @Override
         protected void onPreExecute() {
             // Zuweisung einer einzigartigen ID
-            taskId = lastTask + 2;
-            lastTask = taskId;
+            if(taskId != lastTask) {
+                taskId = lastTask + 2;
+                lastTask = taskId;
+            }
 
             Log.i("TASK", "TASK ID " + taskId + " started!");
         }
@@ -334,11 +380,11 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
             Canvas canvas = fractalView.getCanvas();
 
-            initGetPoints(tempDimension.getDown(), tempDimension.getTop(), teiler);
+            initGetPoints(tempDimension.getDown(), tempDimension.getTop(), teiler+1);
 
-            BigDecimal top = BigDecimal.valueOf(getPoint(i));
-            BigDecimal low = BigDecimal.valueOf(getPoint(i - 1));
-            int dy = getWidth() - yAdd;
+            BigDecimal top = BigDecimal.valueOf(getPoint(i ));
+            BigDecimal low = BigDecimal.valueOf(getPoint(i -1));
+
             for (int i = 5; 0 <= i; i--) {
 
 
@@ -350,8 +396,9 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                 if (getWidth() % width == 0) countX = getWidth() / width;
                 else countX = getWidth() / width + 1;
 
-                if (getWidth() % width == 0) countY = (dy - yAdd) / width;
-                else countY = (dy - yAdd) / width + 1;
+                // fixed
+                if (getWidth() % width == 0) countY = (int) (Math.abs(dy - yAdd) / (width*2));
+                else countY = (int) Math.abs((dy - yAdd) /( width*2))+1;
 
                 int screenX, screenY;
 
@@ -364,10 +411,13 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                     // Falls ein neuer Zeichenprozess erstellt wird wird dieser Unterbrochen
 
 
-                    screenY = j * width + yAdd;
+                    screenY = (int) (j * width + yAdd);
 
                     // Falls die maximale anzahl horizontaler Pixel ueberschritten wird, so
-                    if (screenY > dy) break;
+                    if (screenY > dy) {
+                        System.out.println("Rausgebrochen bei Y = " + screenY);
+                        break;
+                    };
 
                     // Versuch der optimisation TODO erklaeren
                     if (screenY != 0)
@@ -389,29 +439,27 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                         if (screenX > getWidth()) break;
 
                         // Initialisiere Berechnungsgrundlage
-                        DrawInfo inf = new DrawInfo(getPoint(/*tempDimension.getLeft(), tempDimension.getRight(), countX,*/ k), y, k * (width), j * (int) width);
+                        DrawInfo inf = new DrawInfo(getPoint(/*tempDimension.getLeft(), tempDimension.getRight(), countX,*/ k), y, k * (width), screenY);
 
-                        // Frage Farben ab { @see FractalView.Adapter#onDraw(info : DrawInfo) }
-                        inf = fractalView.getAdapter().onDraw(inf);
-
-                        if (inf.getColor() == -100)
-                            try {
-                                throw new Exception("Fehler: Farbe wurde NICHT definiert !");
-                            } catch (Exception e) {
-                                inf.setColor(1);
-                            }
+                        // Frage iteration ab { @see FractalView.Adapter#onDraw(info : DrawInfo) : int }
+                        int pixelIteration = fractalView.getAdapter().onDraw(inf);
 
 
                         // Setze Pixel
                         RectF rectF = new RectF(inf.getScreenX(), inf.getScreenY(), inf.getScreenX() + width * 2, inf.getScreenY() + width * 2);
-                        p.setColor(inf.getColor());
+
+
+                        p.setColor(plot(pixelIteration));
                         canvas.drawRect(rectF, p);
 
                     }
                     // Falls ein neuer Task gestartet wurde, so wird dieser abgebrochen
                     if (taskId != lastTask) return null;
                 }
-                invalidate();
+
+                    redrawStatus = 0;
+                    invalidate();
+
             }
             return null;
         }
@@ -419,6 +467,15 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
         @Override
         protected void onPostExecute(Void infos) {
             Log.i("Zeichnen", "Task ID " + taskId + " is done");
+        }
+
+        private int plot(int iteration) {
+            if (iteration == -1) {
+                return palette.getBaseColor();
+            }
+
+            LinkedList<Integer> colors = palette.getColors();
+            return colors.get(iteration % colors.size());
         }
     }
 
@@ -445,9 +502,9 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
          * Wird immer aufgerufen, falls ein Pixel gezeichnet wird -> Logik hier
          *
          * @param info Info zum zu zeichnenden Pixel
-         * @return Farbe des zu zeichnenden Pixels
+         * @return Iteration der divergenz des zu zeichnenden Pixels (Bsp. Mandelbrotmenge = 2)
          */
-        public abstract DrawInfo onDraw(DrawInfo info);
+        public abstract int onDraw(DrawInfo info);
 
         /**
          * @return die Größe des KoordinatenSystems

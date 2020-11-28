@@ -32,18 +32,18 @@ public class Magnet1 extends FractalView.Adapter {
     };
 
     @Override
-    public DrawInfo onDraw(DrawInfo info) {
+    public int onDraw(DrawInfo info) {
 
         VComplex c = new VComplex(info.getX(), info.getY());
         VComplex z = c;
 
         for (int i = 0; i < itera; i++) {
             z = z.pow(2).add(c.subtract(1d)).divide(z.multiply(2).add(c.subtract(2d))).pow(2);
-            if (z.abs() > 2) return plot(i, info);
+            if (z.abs() > 2) return i;
         }
 
         info.setColor(BLACK);
-        return info;
+        return -1;
     }
 
     private DrawInfo plot(int i, DrawInfo inf) {

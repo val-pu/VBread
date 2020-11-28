@@ -37,7 +37,7 @@ public class MandelBrotAdapter extends FractalView.Adapter {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public DrawInfo onDraw(DrawInfo info) {
+    public int onDraw(DrawInfo info) {
 
         int threshold = (int) (itera/20D);
 
@@ -59,7 +59,7 @@ public class MandelBrotAdapter extends FractalView.Adapter {
 
                 if(i < threshold) {
                     info.setColor(colors[threshold%colors.length]);
-                    return info;
+                    return i;
                 }
 
 //                int f = (int) ((i + 1 - Math.log( (int) Math.log(c.abs()) /*/ Math.log(2)*/)) * 255F/itera);
@@ -78,7 +78,7 @@ public class MandelBrotAdapter extends FractalView.Adapter {
 //
 //                    info.setColor(color);
                 }
-                return info;
+                return i;
             }
 
             // PERIODICITY CHECKING
@@ -88,7 +88,7 @@ public class MandelBrotAdapter extends FractalView.Adapter {
 
                     info.setColor(Color.BLACK);
 
-                    return info;
+                    return -1;
                 }
 
             if (check == checkCounter) {
@@ -106,7 +106,7 @@ public class MandelBrotAdapter extends FractalView.Adapter {
             checkCounter++;
         }
         info.setColor(Color.BLACK);
-        return info;
+        return -1;
     }
 
     @Override

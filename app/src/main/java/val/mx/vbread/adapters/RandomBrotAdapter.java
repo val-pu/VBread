@@ -32,7 +32,7 @@ public class RandomBrotAdapter  extends FractalView.Adapter {
     };
 
     @Override
-    public DrawInfo onDraw(DrawInfo info) {
+    public int onDraw(DrawInfo info) {
 
         VComplex z = new VComplex(info.getX(),info.getY());
         VComplex c = z;
@@ -42,14 +42,14 @@ public class RandomBrotAdapter  extends FractalView.Adapter {
 
             if(z.abs() > Math.PI*10) {
                 info.setColor(colors[i%(colors.length-1)]);
-                return info;
+                return i;
             }
 
         }
 
         info.setColor(BLACK);
 
-        return info;
+        return -1;
     }
 
     @Override

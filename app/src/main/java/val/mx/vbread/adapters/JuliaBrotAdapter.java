@@ -38,7 +38,7 @@ public class JuliaBrotAdapter extends FractalView.Adapter {
 
 
     @Override
-    public DrawInfo onDraw(DrawInfo info) {
+    public int onDraw(DrawInfo info) {
 
 
         VComplex complex = new VComplex(info.getX(), info.getY());
@@ -46,13 +46,13 @@ public class JuliaBrotAdapter extends FractalView.Adapter {
             complex = complex.multiply(complex).add(param);
             if (complex.abs() > 2) {
                 info.setColor(colors[i % colors.length]);
-                return info;
+                return i;
             }
 
         }
         info.setColor(Color.WHITE);
 
-        return info;
+        return -1;
     }
 
     @Override

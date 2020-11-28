@@ -49,7 +49,7 @@ public class ColorPickerBottomSheet extends BottomSheetDialogFragment {
         colors.add(Color.BLUE);
         colors.add(Color.BLACK);
 
-        palettes.add(new ColorPalette(colors, "Test"));
+        palettes.add(new ColorPalette( "Test",0,colors));
 
         pickers.setAdapter(new ColorPickerAdapter(view.getContext(), palettes, fractalView));
 

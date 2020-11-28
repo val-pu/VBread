@@ -16,16 +16,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.LinkedList;
 
 import val.mx.vbread.R;
-import val.mx.vbread.adapters.ExponentialBrotAdapter;
+import val.mx.vbread.adapters.CustomAdapter;
 import val.mx.vbread.adapters.FractalPickerAdapter;
 import val.mx.vbread.adapters.JuliaBrotAdapter;
 import val.mx.vbread.adapters.Magnet1;
 import val.mx.vbread.adapters.MandelBrotAdapter;
 import val.mx.vbread.adapters.MandelBrotAdapter33;
 import val.mx.vbread.adapters.ModdedBrotAdapter;
-import val.mx.vbread.adapters.ModdedBrotAdapter2;
-import val.mx.vbread.adapters.ModdedBrotAdapter3;
-import val.mx.vbread.adapters.ModdedBrotAdapter4;
 import val.mx.vbread.adapters.RandomBrotAdapter;
 import val.mx.vbread.containers.FractalInfo;
 import val.mx.vbread.views.FractalView;
@@ -51,12 +48,10 @@ public class FractalPickerPopUp extends DialogFragment implements FractalPickerA
         dataSet.add(new FractalInfo("Mandelbrot-Menge", "Z(n+1)=Z(n)^2+c", new MandelBrotAdapter()));
         dataSet.add(new FractalInfo("Mandelbrot-Menge ^3", "Z(n+1)=Z(n)^3+c", new MandelBrotAdapter33()));
         dataSet.add(new FractalInfo("Julia-Menge", "Z(n+1)=Z(n)^2+c", new JuliaBrotAdapter()));
+        dataSet.add(new FractalInfo("iwas", "?", new CustomAdapter()));
         dataSet.add(new FractalInfo("?", "Z(n+1)=cos(Z(n))+c", new RandomBrotAdapter()));
-        dataSet.add(new FractalInfo("?2", "Z(n+2)=Z(n+1)^2+Z(n)+c", new ExponentialBrotAdapter()));
         dataSet.add(new FractalInfo("ModdedBrot", "Z(n+1)=Z(n)^2+2c", new ModdedBrotAdapter()));
-        dataSet.add(new FractalInfo("ModdedBrot2", "Z(n+1)=2*Z(n)^2+c", new ModdedBrotAdapter2()));
-        dataSet.add(new FractalInfo("ModdedBrot3", "Z(n+1)=Z(n)^3+c", new ModdedBrotAdapter3()));
-        dataSet.add(new FractalInfo("ModdedBrot4", "Z(n+1)=1/Z(n)^2+c", new ModdedBrotAdapter4()));
+
         dataSet.add(new FractalInfo("Magnet1", "tf", new Magnet1()));
 
         FractalPickerAdapter adapter = new FractalPickerAdapter(this, fractalView, dataSet, requireContext());

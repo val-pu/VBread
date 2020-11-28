@@ -19,6 +19,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_home.*
 import java.math.BigDecimal
@@ -49,6 +51,11 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         editables = view.findViewById(R.id.editables)
         editablesInflater = view.findViewById(R.id.value_editor_inflater)
 
+        // Nicht hinterfragen
+        MobileAds.initialize(context)
+
+        adView.loadAd(AdRequest.Builder().build())
+
         editablesInflater.setOnClickListener {
 
             if (editables.visibility == VISIBLE) {
@@ -58,7 +65,6 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 editables.visibility = VISIBLE
                 editablesInflater.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_fullscreen_24))
             }
-            fractalView.invalidate()
             fractalView.adapter = adapter
         }
 
