@@ -16,6 +16,17 @@ public class DrawInfo {
         this.screenY = screenY;
     }
 
+    @Override
+    public String toString() {
+        return "DrawInfo{" +
+                "x=" + x +
+                ", y=" + y +
+                ", screenX=" + screenX +
+                ", screenY=" + screenY +
+                ", color=" + color +
+                '}';
+    }
+
     public void setColor(@ColorInt int color) {
         this.color = color;
     }

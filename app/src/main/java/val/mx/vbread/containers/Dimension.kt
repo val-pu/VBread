@@ -13,5 +13,10 @@ class Dimension(
         return "$left l $right r $top t $down d"
     }
 
+    fun getDiameter() : BigDecimal {
+
+        return top.subtract(down).abs()
+    }
+
 
 }

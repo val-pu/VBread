@@ -52,9 +52,8 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         editablesInflater = view.findViewById(R.id.value_editor_inflater)
 
         // Nicht hinterfragen
-        MobileAds.initialize(context)
 
-        adView.loadAd(AdRequest.Builder().build())
+//        adView.loadAd(AdRequest.Builder().build())
 
         editablesInflater.setOnClickListener {
 
