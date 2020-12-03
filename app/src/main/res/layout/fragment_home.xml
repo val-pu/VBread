@@ -67,8 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:importantForAutofill="no"
-                android:inputType="number"
+                android:inputType="none"
                 android:padding="5dp"
                 android:text="-2"
                 app:layout_constraintStart_toStartOf="parent"
@@ -94,10 +93,12 @@
                 style="@style/user_edit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:ems="10"
                 android:importantForAutofill="no"
                 android:maxLines="1"
                 android:padding="5dp"
+                android:inputType="none"
                 android:text="2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView5"
@@ -115,6 +116,7 @@
             <TextView
                 android:id="@+id/textView8"
                 style="@style/TextView"
+                android:inputType="none"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Größe des Ausschnitts"
@@ -163,12 +165,12 @@
             style="@style/clickableIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="9dp"
             android:layout_weight="2"
             android:background="@drawable/circle_cardback"
-            android:padding="8dp"
+            android:padding="11dp"
             android:src="@drawable/ic_baseline_arrow_drop_up_24"
-            app:layout_constraintBottom_toTopOf="@+id/seekBar"
+            app:layout_constraintBottom_toTopOf="@+id/attributeRecycler"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="ContentDescription" />
 
@@ -179,9 +181,9 @@
             android:layout_margin="10dp"
             android:layout_weight="2"
             android:background="@drawable/circle_cardback"
-            android:padding="12dp"
+            android:padding="11dp"
             android:src="@drawable/ic_baseline_save_24"
-            app:layout_constraintBottom_toTopOf="@+id/seekBar"
+            app:layout_constraintBottom_toTopOf="@+id/attributeRecycler"
             app:layout_constraintEnd_toEndOf="parent"
             tools:ignore="ContentDescription" />
 
@@ -193,7 +195,7 @@
             android:layout_margin="10dp"
             android:layout_weight="2"
             android:background="@drawable/circle_cardback"
-            android:padding="2dp"
+            android:padding="7dp"
             android:src="@drawable/ic_baseline_color_lens_24"
             app:layout_constraintBottom_toTopOf="@+id/value_editor_inflater"
             app:layout_constraintStart_toStartOf="parent"
@@ -207,7 +209,7 @@
             android:layout_margin="6dp"
             android:layout_weight="2"
             android:background="@drawable/circle_cardback"
-            android:padding="2dp"
+            android:padding="3dp"
             android:src="@drawable/restore_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fractal_picker_icon"
@@ -218,7 +220,7 @@
             style="@style/clickableIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="6dp"
+            android:layout_margin="7dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="80dp"
             android:layout_weight="2"
@@ -231,7 +233,7 @@
 
         <SeekBar
             android:id="@+id/seekBar"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/title_gradient"
             android:elevation="4dp"
@@ -250,5 +252,15 @@
             app:layout_constraintStart_toEndOf="@+id/fractal_picker_icon"
             app:layout_constraintTop_toTopOf="@+id/fractal_picker_icon"
             app:srcCompat="@drawable/ic_baseline_fiber_new_24" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:background="@color/colorAccentLight"
+            android:id="@+id/attributeRecycler"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/fractalView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:itemCount="2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

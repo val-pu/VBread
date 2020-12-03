@@ -1,12 +1,11 @@
 package `val`.mx.vbread.ui.home
 
 import `val`.mx.vbread.R
+import `val`.mx.vbread.adapters.AttributeAdapter
 import `val`.mx.vbread.containers.Dimension
 import `val`.mx.vbread.ui.popups.ColorPickerBottomSheet
-import `val`.mx.vbread.views.FractalView
-import `val`.mx.vbread.adapters.MandelBrotAdapter
-import `val`.mx.vbread.adapters.RandomBrotAdapter
 import `val`.mx.vbread.ui.popups.FractalPickerPopUp
+import `val`.mx.vbread.views.FractalView
 import `val`.mx.vbread.views.FractalView.adapter
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -16,11 +15,11 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.SeekBar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.MobileAds
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_home.*
 import java.math.BigDecimal
@@ -29,7 +28,7 @@ import java.util.*
 class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
 
-    // TODO: 01.11.2020 FRAKTALAUSWAHL VERBESSERN
+    // DONE : 01.11.2020 FRAKTALAUSWAHL VERBESSERN
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -97,6 +96,7 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             if (fractalView.bitmap != null) {
 
                 val imgName = UUID.randomUUID().toString()
+
                 MediaStore.Images.Media.insertImage(
                     view.context.contentResolver,
                     fractalView.bitmap,
@@ -115,11 +115,9 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         }
 
 
-
         seekBar.setOnSeekBarChangeListener(this)
 
         fractalView.homeFragment = this
-
     }
 
     companion object Companion {
@@ -156,12 +154,18 @@ class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
-
         if (adapter == null) return
         adapter!!.itera = seekBar!!.progress * 3
         fractalView.adapter = adapter!!
     }
+
+    fun initParamSliders() {
+
+        attributeRecycler.layoutManager = LinearLayoutManager(context)
+        attributeRecycler.adapter = AttributeAdapter(context,fractalView);
+    }
+
+
 
     fun updateUI() {
         posYEditText.setText(adapter!!.dimension.top.toDouble().toString())

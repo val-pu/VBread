@@ -12,7 +12,7 @@ import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
 import val.mx.vbread.views.FractalView;
 
-public class MandelBrotAdapter extends FractalView.Adapter {
+public class ModifiedBrotAdapter extends FractalView.Adapter {
 
 
 
@@ -34,7 +34,7 @@ public class MandelBrotAdapter extends FractalView.Adapter {
         for (int i = 0; i < itera; i++) {
 
 
-            c = c.multiply(c).add(start);
+            c = c.multiply(c).subtract(start.divide(c));
 
             // Farben https://www.math.univ-toulouse.fr/~cheritat/wiki-draw/index.php/Mandelbrot_set
             // Farben https://www.codingame.com/playgrounds/2358/how-to-plot-the-mandelbrot-set/adding-some-colors

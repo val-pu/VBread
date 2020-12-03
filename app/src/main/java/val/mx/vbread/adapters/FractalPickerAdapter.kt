@@ -2,6 +2,7 @@ package `val`.mx.vbread.adapters
 
 import `val`.mx.vbread.R
 import `val`.mx.vbread.containers.FractalInfo
+import `val`.mx.vbread.ui.home.HomeFragment
 import `val`.mx.vbread.views.FractalView
 import android.content.Context
 import android.view.LayoutInflater
@@ -34,7 +35,19 @@ class FractalPickerAdapter(val owner: FractalPickListener,val fractalView: Fract
         holder.itemView.setOnClickListener {
             fractalView.onFractalPick(info.adapter)
             owner.onFractalPick(info.adapter)
-            Snackbar.make(holder.itemView,"Successfully picked new Fractal!",Snackbar.LENGTH_LONG).show()
+            Snackbar.make(holder.itemView,"Successfully picked new Fractal!",Snackbar.LENGTH_LONG).show();
+//            Thread {
+//                for (i in 0 until 200) {
+//
+//                    val x = FractalView.getParameterRequest().parameterRequests.get("Julia-X");
+//                    x!!.value = i / 100.toDouble()
+//
+//                    FractalView.getParameterRequest().parameterRequests["Julia-X"] = x;
+//                    FractalView.getParameterRequest().parameterRequests["Julia-Y"] = x;
+//                     Thread.sleep(100)
+//                }
+//            }.start()
+
         }
     }
 

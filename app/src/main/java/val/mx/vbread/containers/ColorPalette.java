@@ -24,6 +24,7 @@ public class ColorPalette {
         this.title = test;
         this.baseColor = i;
         this.colors = colors;
+        length = this.colors.size();
     }
 
     public LinkedList<Integer> getColors() {
@@ -37,8 +38,8 @@ public class ColorPalette {
 
         if(iteration == 0) return baseColor;
 
-        return GetColor(iteration).toArgb();
-//        return colors.get(iteration%length);
+//        return GetColor(iteration).toArgb();
+        return colors.get(iteration%length);
     }
 
 

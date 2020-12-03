@@ -11,11 +11,15 @@ import val.mx.vbread.VComplex;
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
 import val.mx.vbread.views.FractalView;
+import val.mx.vbread.views.ParameterRequestEvent;
 
-public class MandelBrotAdapter extends FractalView.Adapter {
+public class ParameterizedMandelBrotAdapter extends FractalView.Adapter {
 
 
-
+    @Override
+    public void onParameterRequest(ParameterRequestEvent e) {
+        e.request("param",-2,2);
+    }
 
     private VComplex old = new VComplex(20D, 20D);
 
@@ -23,18 +27,19 @@ public class MandelBrotAdapter extends FractalView.Adapter {
     @Override
     public int onDraw(DrawInfo info) {
 
+        VComplex param = new VComplex(getParam("param"),.1D);
+
         int threshold = (int) (itera/20D);
 
         int check = 3, checkCounter = 0;
         int update = 10, updateCounter = 0;
         VComplex c = new VComplex(info.getX(), info.getY());
-        VComplex start = c
-                ;
+        VComplex start = c;
 
         for (int i = 0; i < itera; i++) {
 
 
-            c = c.multiply(c).add(start);
+            c = c.multiply(c).add(start).add(param);
 
             // Farben https://www.math.univ-toulouse.fr/~cheritat/wiki-draw/index.php/Mandelbrot_set
             // Farben https://www.codingame.com/playgrounds/2358/how-to-plot-the-mandelbrot-set/adding-some-colors

@@ -23,6 +23,8 @@ import val.mx.vbread.adapters.Magnet1;
 import val.mx.vbread.adapters.MandelBrotAdapter;
 import val.mx.vbread.adapters.MandelBrotAdapter33;
 import val.mx.vbread.adapters.ModdedBrotAdapter;
+import val.mx.vbread.adapters.ModifiedBrotAdapter;
+import val.mx.vbread.adapters.ParameterizedMandelBrotAdapter;
 import val.mx.vbread.adapters.RandomBrotAdapter;
 import val.mx.vbread.containers.FractalInfo;
 import val.mx.vbread.views.FractalView;
@@ -46,6 +48,8 @@ public class FractalPickerPopUp extends DialogFragment implements FractalPickerA
         LinkedList<FractalInfo> dataSet = new LinkedList<>();
 
         dataSet.add(new FractalInfo("Mandelbrot-Menge", "Z(n+1)=Z(n)^2+c", new MandelBrotAdapter()));
+        dataSet.add(new FractalInfo("Parametrized Mandelbrot-Menge", "Z(n+1)=Z(n)^2+c+p", new ParameterizedMandelBrotAdapter()));
+        dataSet.add(new FractalInfo("Modified Brot", "Z(n+1)=Z(n)^2+c+p", new ModifiedBrotAdapter()));
         dataSet.add(new FractalInfo("Mandelbrot-Menge ^3", "Z(n+1)=Z(n)^3+c", new MandelBrotAdapter33()));
         dataSet.add(new FractalInfo("Julia-Menge", "Z(n+1)=Z(n)^2+c", new JuliaBrotAdapter()));
         dataSet.add(new FractalInfo("iwas", "?", new CustomAdapter()));
