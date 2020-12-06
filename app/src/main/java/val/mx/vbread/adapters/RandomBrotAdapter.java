@@ -4,7 +4,7 @@ import android.graphics.Color;
 
 import java.math.BigDecimal;
 
-import val.mx.vbread.VComplex;
+import val.mx.vbread.Complex;
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
 import val.mx.vbread.views.FractalView;
@@ -34,8 +34,8 @@ public class RandomBrotAdapter  extends FractalView.Adapter {
     @Override
     public int onDraw(DrawInfo info) {
 
-        VComplex z = new VComplex(info.getX(),info.getY());
-        VComplex c = z;
+        Complex z = new Complex(info.getX(),info.getY());
+        Complex c = z;
 
         for (int i = 0; i < itera; i++) {
             z = c.add(z.cos());

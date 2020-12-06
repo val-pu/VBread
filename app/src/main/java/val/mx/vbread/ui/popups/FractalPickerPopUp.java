@@ -52,7 +52,7 @@ public class FractalPickerPopUp extends DialogFragment implements FractalPickerA
         dataSet.add(new FractalInfo("Modified Brot", "Z(n+1)=Z(n)^2+c+p", new ModifiedBrotAdapter()));
         dataSet.add(new FractalInfo("Mandelbrot-Menge ^3", "Z(n+1)=Z(n)^3+c", new MandelBrotAdapter33()));
         dataSet.add(new FractalInfo("Julia-Menge", "Z(n+1)=Z(n)^2+c", new JuliaBrotAdapter()));
-        dataSet.add(new FractalInfo("iwas", "?", new CustomAdapter()));
+        dataSet.add(new FractalInfo("Zufallsgeneriert", "z*0.3*z+c+p", new CustomAdapter()));
         dataSet.add(new FractalInfo("?", "Z(n+1)=cos(Z(n))+c", new RandomBrotAdapter()));
         dataSet.add(new FractalInfo("ModdedBrot", "Z(n+1)=Z(n)^2+2c", new ModdedBrotAdapter()));
 

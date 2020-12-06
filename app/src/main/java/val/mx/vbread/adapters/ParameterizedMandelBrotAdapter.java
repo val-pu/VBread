@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi;
 
 import java.math.BigDecimal;
 
-import val.mx.vbread.VComplex;
+import val.mx.vbread.Complex;
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
 import val.mx.vbread.views.FractalView;
@@ -21,20 +21,20 @@ public class ParameterizedMandelBrotAdapter extends FractalView.Adapter {
         e.request("param",-2,2);
     }
 
-    private VComplex old = new VComplex(20D, 20D);
+    private Complex old = new Complex(20D, 20D);
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public int onDraw(DrawInfo info) {
 
-        VComplex param = new VComplex(getParam("param"),.1D);
+        Complex param = new Complex(getParam("param"),.1D);
 
         int threshold = (int) (itera/20D);
 
         int check = 3, checkCounter = 0;
         int update = 10, updateCounter = 0;
-        VComplex c = new VComplex(info.getX(), info.getY());
-        VComplex start = c;
+        Complex c = new Complex(info.getX(), info.getY());
+        Complex start = c;
 
         for (int i = 0; i < itera; i++) {
 
@@ -82,7 +82,7 @@ public class ParameterizedMandelBrotAdapter extends FractalView.Adapter {
 
     @Override
     public void onNewLine() {
-        old = new VComplex(9D, 9D);
+        old = new Complex(9D, 9D);
     }
 
     @Override

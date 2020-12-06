@@ -368,7 +368,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
             double verhaeltnis = (1 - (((double) canvas.getHeight()) / canvas.getWidth())) * .5;
 
-            Log.i("Verhaeltnis", "Verhaeltins ist " + verhaeltnis);
+//            Log.i("Verhaeltnis", "Verhaeltins ist " + verhaeltnis);
 
             BigDecimal customAdd = tempDimension.getDiameter().multiply(BigDecimal.valueOf(verhaeltnis));
 
@@ -377,14 +377,14 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
             adapter.onDrawStart();
 
-            for (int j = 5; j > 0; j--) {
+            for (int j = 5; j > -1; --j) {
 
-                int lastWidth;
+                double width = Math.pow(2, j);
 
-                int width = (int) Math.pow(2, j);
+                Log.i("DRAWSTATUS",width + "");
 
-                int countX = getWidth() / width;
-                int countY = getHeight() / width;
+                int countX = (int) (getWidth() / width);
+                int countY = (int) (getHeight() / width);
 
                 // Log.e("WIDTH", String.valueOf(width));
 
@@ -394,9 +394,11 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                 for (int k = 0; k < countY; k++) {
 
                     double yCoordinate = getPoint(k, stepY, bottom);
-                    int bitMapY = k * width;
+                    int bitMapY = (int) (k * width);
 
-                    if (k != 0 && bitMapY % (width * 2) == 0) {
+                    if(width != .5)
+
+                        if (k != 0 && bitMapY % (width * 2 ) == 0) {
                         continue;
                     }
 
@@ -406,13 +408,16 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                     for (int l = 0; l < countX; l++) {
 
                         double xCoordinate = getPoint(l, stepX, left);
-                        int bitMapX = l * width;
+                        double bitMapX = (l * width);
 
-                        if (l != 0 && bitMapX % (width * 2) == 0) {
+
+                        if(width != .5)
+
+                        if (l != 0 && bitMapX % ((width * 2)) == 0) {
                             continue;
                         }
 
-                        DrawInfo info = new DrawInfo(xCoordinate, yCoordinate, bitMapX, bitMapY);
+                        DrawInfo info = new DrawInfo(xCoordinate, yCoordinate, (int) bitMapX, bitMapY);
                         int iteration = adapter.onDraw(info);
 
 //                        if (adapter.usesIntegratedColorPalette()) {
@@ -420,11 +425,17 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
                         p.setColor(palette.getColorByIteration(iteration));
 //                        } else p.setColor(info.getColor());
 
-                        Rect rect = new Rect(
+                        /*Rect rect = new Rect(
                                 bitMapX,
                                 bitMapY,
                                 bitMapX + width * 2,
                                 bitMapY + width * 2
+                        );
+                        */Rect rect = new Rect(
+                                (int) ((int) -1 + bitMapX),
+                                (int) -1 + bitMapY,
+                                (int) (bitMapX+ width),
+                                (int) (bitMapY + width)
                         );
 
                         canvas.drawRect(rect, p);

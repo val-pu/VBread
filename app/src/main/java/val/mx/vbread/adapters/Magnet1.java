@@ -4,7 +4,7 @@ import android.graphics.Color;
 
 import java.math.BigDecimal;
 
-import val.mx.vbread.VComplex;
+import val.mx.vbread.Complex;
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
 import val.mx.vbread.views.FractalView;
@@ -34,8 +34,8 @@ public class Magnet1 extends FractalView.Adapter {
     @Override
     public int onDraw(DrawInfo info) {
 
-        VComplex c = new VComplex(info.getX(), info.getY());
-        VComplex z = c;
+        Complex c = new Complex(info.getX(), info.getY());
+        Complex z = c;
 
         for (int i = 0; i < itera; i++) {
             z = z.pow(2).add(c.subtract(1d)).divide(z.multiply(2).add(c.subtract(2d))).pow(2);

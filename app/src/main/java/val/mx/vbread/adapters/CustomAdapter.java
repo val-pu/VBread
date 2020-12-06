@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi;
 
 import java.math.BigDecimal;
 
-import val.mx.vbread.VComplex;
+import val.mx.vbread.Complex;
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
 import val.mx.vbread.views.FractalView;
@@ -33,7 +33,7 @@ public class CustomAdapter extends FractalView.Adapter {
     };
 
 
-    private VComplex old = new VComplex(20D, 20D);
+    private Complex old = new Complex(20D, 20D);
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -43,13 +43,13 @@ public class CustomAdapter extends FractalView.Adapter {
 
         int check = 3, checkCounter = 0;
         int update = 10, updateCounter = 0;
-        VComplex c = new VComplex(info.getX(), info.getY());
-        VComplex start = c;
+        Complex c = new Complex(info.getX(), info.getY());
+        Complex start = c;
 
         for (int i = 0; i < itera; i++) {
 
 
-            c = c.multiply(c.multiply(0.3)).subtract(start).add(new VComplex(1D,1D));
+            c = c.multiply(c.multiply(0.3)).subtract(start).add(new Complex(1D,1D));
 
             // Farben https://www.math.univ-toulouse.fr/~cheritat/wiki-draw/index.php/Mandelbrot_set
             // Farben https://www.codingame.com/playgrounds/2358/how-to-plot-the-mandelbrot-set/adding-some-colors
@@ -88,7 +88,7 @@ public class CustomAdapter extends FractalView.Adapter {
 
     @Override
     public void onNewLine() {
-        old = new VComplex(9D, 9D);
+        old = new Complex(9D, 9D);
     }
 
     @Override

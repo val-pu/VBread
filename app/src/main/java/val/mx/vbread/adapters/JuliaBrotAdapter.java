@@ -4,7 +4,7 @@ import android.graphics.Color;
 
 import java.math.BigDecimal;
 
-import val.mx.vbread.VComplex;
+import val.mx.vbread.Complex;
 import val.mx.vbread.containers.Dimension;
 import val.mx.vbread.containers.DrawInfo;
 import val.mx.vbread.views.FractalView;
@@ -12,9 +12,9 @@ import val.mx.vbread.views.ParameterRequestEvent;
 
 public class JuliaBrotAdapter extends FractalView.Adapter {
 
-    VComplex param = new VComplex(0.1, -0.1D);
+    Complex param = new Complex(0.1, -0.1D);
 
-    public void setParam(VComplex param) {
+    public void setParam(Complex param) {
         this.param = param;
     }
 
@@ -24,7 +24,7 @@ public class JuliaBrotAdapter extends FractalView.Adapter {
         double real = getParam("Julia-X");
         double imag = getParam("Julia-Y");
 
-        param = new VComplex(real, imag);
+        param = new Complex(real, imag);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class JuliaBrotAdapter extends FractalView.Adapter {
     public int onDraw(DrawInfo info) {
 
 
-        VComplex complex = new VComplex(info.getX(), info.getY());
+        Complex complex = new Complex(info.getX(), info.getY());
         for (int i = 0; i < 1000; i++) {
             complex = complex.multiply(complex).add(param);
             if (complex.abs() > 2) {
