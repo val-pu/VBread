@@ -1,7 +1,7 @@
 package val.mx.vbread.adapters;
 
-import android.graphics.Color;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -13,78 +13,43 @@ import val.mx.vbread.containers.DrawInfo;
 import val.mx.vbread.views.FractalView;
 
 public class MandelBrotAdapter extends FractalView.Adapter {
-
-
-
-
-    private Complex old = new Complex(20D, 20D);
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public int onDraw(DrawInfo info) {
 
-        int threshold = (int) (itera/20D);
-
-        int check = 3, checkCounter = 0;
-        int update = 10, updateCounter = 0;
         Complex c = new Complex(info.getX(), info.getY());
-        Complex start = c
-                ;
+        Complex start = c;
 
         for (int i = 0; i < itera; i++) {
 
-
+            // Funktion des Fraktals
             c = c.multiply(c).add(start);
 
-            // Farben https://www.math.univ-toulouse.fr/~cheritat/wiki-draw/index.php/Mandelbrot_set
-            // Farben https://www.codingame.com/playgrounds/2358/how-to-plot-the-mandelbrot-set/adding-some-colors
-
+            // Abbruch der Berechnung bei Divergenz
             if (c.abs() > 2) {
-
-                if(i < threshold) {
-                    return i;
-                }
                 return i;
             }
-
-            // PERIODICITY CHECKING
-            // https://en.wikipedia.org/wiki/User:Simpsons_contributor/periodicity_checking
-            if (Math.abs(old.getImag() - c.getImag()) < ZERO)
-                if (Math.abs(old.getReal() - c.getReal()) < ZERO) {
-
-                    info.setColor(Color.BLACK);
-
-                    return -1;
-                }
-
-            if (check == checkCounter) {
-                checkCounter = 0;
-                old = c;
-
-                if (update == updateCounter) {
-                    check *= 2;
-                    updateCounter = 0;
-                }
-
-                updateCounter++;
-            }
-
-            checkCounter++;
         }
-        info.setColor(Color.BLACK);
+
+        // Zahl wahrscheinlich in der Menge
         return -1;
     }
 
+    private long start = 0;
+    private Long sum = Long.valueOf(0L);
+    private int iteras;
+
     @Override
     public void onNewLine() {
-        old = new Complex(9D, 9D);
+        long time = start - System.nanoTime();
+        sum += time;
+        iteras++;
+        Log.i("MbrotAdapter", "Took " + time + " for one line MEAN: " + sum / iteras);
+        start = System.nanoTime();
     }
 
     @Override
     public Dimension getInitialSize() {
-        return new Dimension(new BigDecimal("-2"),new BigDecimal("2"),new BigDecimal("2"),new BigDecimal("-2"));
+        return new Dimension(new BigDecimal("-2"), new BigDecimal("2"), new BigDecimal("2"), new BigDecimal("-2"));
     }
-
-    private Double ZERO = 1e-30;
-
 }

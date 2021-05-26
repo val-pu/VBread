@@ -47,7 +47,7 @@
             android:layout_weight="2"
             android:background="@drawable/text_gradient"
             android:paddingHorizontal="3dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -188,12 +188,23 @@
             tools:ignore="ContentDescription" />
 
         <ImageView
+            android:id="@+id/archivebtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="10dp"
+            android:background="@drawable/circle_cardback"
+            android:padding="11dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_archive_24"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
             android:id="@+id/palette_picker"
             style="@style/clickableIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:layout_weight="2"
             android:background="@drawable/circle_cardback"
             android:padding="7dp"
             android:src="@drawable/ic_baseline_color_lens_24"
@@ -207,7 +218,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
-            android:layout_weight="2"
             android:background="@drawable/circle_cardback"
             android:padding="3dp"
             android:src="@drawable/restore_24"
@@ -225,7 +235,7 @@
             android:layout_marginTop="80dp"
             android:layout_weight="2"
             android:background="@drawable/circle_cardback"
-            android:padding="4dp"
+            android:padding="11dp"
             android:src="@drawable/ic_baseline_settings_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -235,8 +245,10 @@
             android:id="@+id/seekBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/title_gradient"
+            android:background="#3A687C"
             android:elevation="4dp"
+            android:progressTint="@color/cardview_light_background"
+            android:thumbTint="@color/colorPrimaryDark"
             android:orientation="horizontal"
             android:padding="5dp"
             android:progress="10"
@@ -262,5 +274,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:itemCount="2" />
+
+        <ImageView
+            android:id="@+id/savebtn"
+            android:layout_width="wrap_content"
+            android:layout_margin="6dp"
+            android:layout_weight="2"
+            android:background="@drawable/circle_cardback"
+            android:padding="3dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/archivebtn"
+            app:srcCompat="@drawable/ic_baseline_bookmark_24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

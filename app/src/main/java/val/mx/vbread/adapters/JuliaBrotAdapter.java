@@ -38,7 +38,7 @@ public class JuliaBrotAdapter extends FractalView.Adapter {
 
 
         Complex complex = new Complex(info.getX(), info.getY());
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < itera; i++) {
             complex = complex.multiply(complex).add(param);
             if (complex.abs() > 2) {
                 return i;

@@ -69,18 +69,6 @@ public class CustomAdapter extends FractalView.Adapter {
                 return -1;
             }
 
-        if (check == checkCounter) {
-            checkCounter = 0;
-            old = c;
-
-            if (update == updateCounter) {
-                check *= 2;
-                updateCounter = 0;
-            }
-
-            updateCounter++;
-        }
-
         checkCounter++;
 
         return -1;

@@ -41,6 +41,8 @@ public class AttributeAdapter extends RecyclerView.Adapter<AttributeAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
+        // Setzung von events und anzeige der Slider für die jeweiligen Parameter
+
         ParameterRequestEvent.Parameter param = parameterData.get(position);
 
         holder.paramName.setText(param.getName());

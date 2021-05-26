@@ -28,7 +28,9 @@ import java.util.*
 class HomeFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
 
-    // DONE : 01.11.2020 FRAKTALAUSWAHL VERBESSERN
+    // DONE : 01.11.2020 FRAKTALAUSWAHL VERBESSERN done
+
+    // DIese Klasse dient ausschließlich dem Zweck die Interaktiven Komponenten zu managen
 
     override fun onCreateView(
         inflater: LayoutInflater,

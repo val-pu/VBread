@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.LinkedList;
+import java.util.Random;
 
 import val.mx.vbread.R;
 import val.mx.vbread.adapters.ColorPickerAdapter;
@@ -40,6 +41,10 @@ public class ColorPickerBottomSheet extends BottomSheetDialogFragment {
     @SuppressLint("NewApi")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+
+        // Einfache Generierung von Farben.. Beispiel unten
+
         pickers = view.findViewById(R.id.color_recycler);
 
         pickers.setLayoutManager(new LinearLayoutManager(view.getContext()));
@@ -82,7 +87,7 @@ public class ColorPickerBottomSheet extends BottomSheetDialogFragment {
             colors.add(Color.rgb(i,i,i));
         }
 
-        palette = new ColorPalette("BlackNWhite",Color.BLACK,colors);
+        palette = new ColorPalette("Schwarz Weiß",Color.BLACK,colors);
 
         palettes.add(palette);
 
@@ -96,19 +101,30 @@ public class ColorPickerBottomSheet extends BottomSheetDialogFragment {
             colors.add(Color.rgb(10, (int) (10  + Math.log(i)), (int) (i*1.5)));
         }
 
-        palette = new ColorPalette("wasdas",Color.BLACK,colors);
+        palette = new ColorPalette("Farbexperiment",Color.BLACK,colors);
 
         palettes.add(palette);
 
+        // Beispiel. Gerne hieran rumexperimentieren
+
+        // Erstellung von Farben
+
+        Random r = new Random();
+
+        colors = new LinkedList<>();
+
+        for (int i = 0; i < r.nextInt(100); i++) {
+            colors.add(Color.rgb(r.nextInt(255),r.nextInt(30),r.nextInt(40)));
+        }
+
+        palette = new ColorPalette("So das ist ein echtes experiment",Color.WHITE,colors);
+
+        // Hinzufügung der Farben
+
+        palettes.add(palette);
 
         pickers.setAdapter(new ColorPickerAdapter(view.getContext(), palettes, fractalView,this));
 
-
-    }
-
-    public interface OnColorPalettePickedListener {
-
-        public void onPalettePick(ColorPalette palette);
 
     }
 }

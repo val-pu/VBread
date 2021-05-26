@@ -20,6 +20,7 @@ import val.mx.vbread.adapters.CustomAdapter;
 import val.mx.vbread.adapters.FractalPickerAdapter;
 import val.mx.vbread.adapters.JuliaBrotAdapter;
 import val.mx.vbread.adapters.Magnet1;
+import val.mx.vbread.adapters.Magnet2;
 import val.mx.vbread.adapters.MandelBrotAdapter;
 import val.mx.vbread.adapters.MandelBrotAdapter33;
 import val.mx.vbread.adapters.ModdedBrotAdapter;
@@ -55,8 +56,8 @@ public class FractalPickerPopUp extends DialogFragment implements FractalPickerA
         dataSet.add(new FractalInfo("Zufallsgeneriert", "z*0.3*z+c+p", new CustomAdapter()));
         dataSet.add(new FractalInfo("?", "Z(n+1)=cos(Z(n))+c", new RandomBrotAdapter()));
         dataSet.add(new FractalInfo("ModdedBrot", "Z(n+1)=Z(n)^2+2c", new ModdedBrotAdapter()));
-
-        dataSet.add(new FractalInfo("Magnet1", "tf", new Magnet1()));
+        dataSet.add(new FractalInfo("Magnet1", "Zu groß um es hier zu zeigen", new Magnet1()));
+        dataSet.add(new FractalInfo("Magnet2", "Zu groß um es hier zu zeigen", new Magnet2()));
 
         FractalPickerAdapter adapter = new FractalPickerAdapter(this, fractalView, dataSet, requireContext());
         RecyclerView recycler = view.findViewById(R.id.fractal_recycler);
