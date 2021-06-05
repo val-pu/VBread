@@ -1,7 +1,6 @@
 package val.mx.vbread.adapters;
 
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -44,7 +43,7 @@ public class MandelBrotAdapter extends FractalView.Adapter {
         long time = start - System.nanoTime();
         sum += time;
         iteras++;
-        Log.i("MbrotAdapter", "Took " + time + " for one line MEAN: " + sum / iteras);
+//        Log.i("MbrotAdapter", "Took " + time + " for one line MEAN: " + sum / iteras);
         start = System.nanoTime();
     }
 

@@ -17,7 +17,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.imgscalr.Scalr;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
@@ -98,15 +97,21 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
             // Ausführung der Befehle nachdem die App fertig gestartet ist
             getRootView().post(() -> {
                 // Erstellung einer neuen Bitmap, da noch keine vorhanden ist
-                bitmap = Bitmap.createBitmap(
-                        width,
-                        height,
-                        Bitmap.Config.ARGB_8888);
+                try {
 
-                canvas = new Canvas(bitmap);
-                setBackgroundDrawable(new BitmapDrawable(bitmap));
-                adapter = new MandelBrotAdapter();
-                init();
+
+                    bitmap = Bitmap.createBitmap(
+                            width,
+                            height,
+                            Bitmap.Config.ARGB_8888);
+
+                    canvas = new Canvas(bitmap);
+                    setBackgroundDrawable(new BitmapDrawable(bitmap));
+                    adapter = new MandelBrotAdapter();
+                    init();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             });
         else {
 
@@ -406,12 +411,14 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
             for (int j = startWidth; j > -1; --j) {
 
-                double width = Math.pow(2, j);
+                int width = (int) Math.pow(2, j);
+
+                int altWidth = width / 2;
 
                 Log.i("DRAWSTATUS", width + "");
 
-                int countX = (int) (canvas.getWidth() / width);
-                int countY = (int) (canvas.getHeight() / width);
+                int countX = (int) (canvas.getWidth() / width) + 1;
+                int countY = (int) (canvas.getHeight() / width) + 1;
 
                 // Log.e("WIDTH", String.valueOf(width));
 
@@ -422,24 +429,24 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
                 // Berechnung der Werte für jeden XY Wert, der der Auflösung entspricht
 
-                for (int k = 0; k < countY + 2; k++) {
+                for (int k = 0; k < countY; k++) {
 
                     double yCoordinate = getPoint(k, stepY, bottom);
                     int bitMapY = (int) (k * width);
                     adapter.onNewLine();
 
-                    for (int l = 0; l < countX + 2; l++) {
+                    for (int l = 0; l < countX; l++) {
 
                         double xCoordinate = getPoint(l, stepX, left);
                         double bitMapX = (l * width);
 
 
-//                        if(width != 32)
+                        if (width != 32)
 
-                        if (l != 0 && (bitMapX % ((width * 2)) + bitMapY % ((width * 2))) == 0) {
-//                            System.out.println("Skipped X " + bitMapX + " Y" + bitMapY);
-                            continue;
-                        }
+                            if (l != 0 && (bitMapX % width) + (bitMapY % (width)) == width) {
+                                Log.i("Skipping", "Skipped X " + bitMapX + " Y" + bitMapY);
+                                continue;
+                            }
 
                         // Abfrage der Farbe am jeweiligen Koordiantenpunkt. Die Funktion, welche die Iteratiosnanzahl berechnet befindet sich im jeweils aktiven Adapter
 
@@ -451,7 +458,10 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 */
 
                         ColorPalette palette = getPalette();
-                        p.setColor(palette.getColorByIteration(iteration));
+                        if (adapter.useIntegratedColorPalette())
+                            p.setColor(palette.getColorByIteration(iteration));
+                        else
+                            p.setColor(info.getColor());
                         Rect rect = new Rect(
                                 (int) (bitMapX),
                                 bitMapY,
@@ -479,7 +489,7 @@ public class FractalView extends androidx.appcompat.widget.AppCompatImageView im
 
         @Override
         protected void onProgressUpdate(Void... values) {
-            
+
             invalidate();
         }
 

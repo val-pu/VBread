@@ -32,7 +32,7 @@ public class DrawInfo {
     }
 
     public int getColor() {
-        assert color >= 0;
+//        assert color >= 0;
         return color;
     }
 
